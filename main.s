@@ -53,7 +53,7 @@ __main
 		nop	   
 		nop	   									;; pas necessaire en simu ou en debbug step by step...
 	
-		;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^CONFIGURATION LED
+		;-----------------------CONFIGURATION LED
         ldr r0, = PINSF_4_5
         ldr r6, = GPIO_PORTF_BASE+GPIO_O_DIR   
         str r0, [r6]
@@ -73,10 +73,9 @@ __main
 		;; pour eteindre LED 
         mov r2, #0x000       					
 
-		;vvvvvvvvvvvvvvvvvvvvvvvFin configuration LED 
+		;-----------------------FIN CONFIGURATION LED 
 		
-		
-		;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^CONFIGURATION SWITCH
+		;-----------------------CONFIGURATION SWITCH
 		ldr r0, = PINSD_6_7
 		
 		ldr r7, = GPIO_PORTD_BASE+GPIO_O_DEN
@@ -84,10 +83,20 @@ __main
  
 		ldr r7, = GPIO_PORTD_BASE+GPIO_O_PUR	
 		str r0, [r7]
-		;vvvvvvvvvvvvvvvvvvvvvvvFin configuration SWITCH
+		;-----------------------FIN CONFIGURATION SWITCH
+
+		;-----------------------CONFIGURATION BUMPER
+		ldr r0, = PINSD_6_7
+		
+		ldr r7, = GPIO_PORTD_BASE+GPIO_O_DEN
+		str r0, [r7]
+ 
+		ldr r7, = GPIO_PORTD_BASE+GPIO_O_PUR	
+		str r0, [r7]
+		;-----------------------FIN CONFIGURATION BUMPER
 		
 
-		;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^CLIGNOTTEMENT
+		;-----------------------CLIGNOTTEMENT
 
 loop    
 		ldr r1, [r7]							;; on récupère les entrées des switchs
