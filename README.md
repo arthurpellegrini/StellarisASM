@@ -1,0 +1,13 @@
+R0 => Timer
+R1 => LED ETEINTE
+R2 => LED ALLUMEE
+R3 => SWITCHS
+R4 => BUMPERS
+R5 => 
+R6 => @ LEDS
+R7 => @ SWITCHS
+R8 => @ BUMPERS
+R9 => 
+R10 => 
+R11 => 
+R12 => 
