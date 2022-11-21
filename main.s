@@ -23,7 +23,7 @@ GPIO_O_DR2R   		EQU 	0x00000500  ; GPIO 2-mA Drive Select (p428 datasheet de lm3
 GPIO_O_DEN   		EQU 	0x0000051C  ; GPIO Digital Enable (p437 datasheet de lm3s9B92.pdf)
 
 ; PIN select
-PIN4				EQU		0x10		; led1 sur broche 4
+PINS_PORTF				EQU		0x30		; led 1 & 2 sur broches 4 & 5 (0011 0000)
 
 ; blinking frequency
 DUREE   			EQU     0x002FFFFF	; Random Value
@@ -45,39 +45,42 @@ __main
 		nop	   									;; pas necessaire en simu ou en debbug step by step...
 	
 		;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^CONFIGURATION LED
-
-        ldr r6, = GPIO_PORTF_BASE+GPIO_O_DIR    ;; 1 Pin du portF en sortie (broche 4 : 00010000)
-        ldr r0, = PIN4 	
+        ldr r0, = PINS_PORTF
+        ldr r6, = GPIO_PORTF_BASE+GPIO_O_DIR   
         str r0, [r6]
 		
-        ldr r6, = GPIO_PORTF_BASE+GPIO_O_DEN	;; Enable Digital Function 
-        ldr r0, = PIN4 		
+        ldr r6, = GPIO_PORTF_BASE+GPIO_O_DEN
         str r0, [r6]
  
-		ldr r6, = GPIO_PORTF_BASE+GPIO_O_DR2R	;; Choix de l'intensité de sortie (2mA)
-        ldr r0, = PIN4 			
+		ldr r6, = GPIO_PORTF_BASE+GPIO_O_DR2R		
         str r0, [r6]
-
+		
+		; allumer les leds
+		mov r3, #PINS_PORTF       					;; Allume portF broches 4 et 5
+		ldr r6, = GPIO_PORTF_BASE + (PINS_PORTF<<2) 
+		
+		        
         mov r2, #0x000       					;; pour eteindre LED
-     
-		; allumer la led broche 4 (PIN4)
-		mov r3, #PIN4       					;; Allume portF broche 4 : 00010000
-		ldr r6, = GPIO_PORTF_BASE + (PIN4<<2)  ;; @data Register = @base + (mask<<2) ==> LED1
 
 		;vvvvvvvvvvvvvvvvvvvvvvvFin configuration LED 
+		
+		
+		;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^CONFIGURATION SWITCH
+		
+		;vvvvvvvvvvvvvvvvvvvvvvvFin configuration SWITCH
+		
 
 		;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^CLIGNOTTEMENT
 
-loop
-        str r2, [r6]    						;; Eteint LED car r2 = 0x00      
-        ldr r1, = DUREE 						;; pour la duree de la boucle d'attente1 (wait1)
-
+loop    str r2, [r6]    						;; Eteint LED car r2 = 0x00     		
+        
+		ldr r1, = DUREE
 wait1	subs r1, #1
         bne wait1
-
-        str r3, [r6]  							;; Allume portF broche 4 : 00010000 (contenu de r3)
-        ldr r1, = DUREE							;; pour la duree de la boucle d'attente2 (wait2)
-
+	
+        str r3, [r6]  							;; Allume portF broche 4 & 5 : 00110000 (contenu de r3)
+        
+		ldr r1, = DUREE
 wait2   subs r1, #1
         bne wait2
 
