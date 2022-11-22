@@ -7,17 +7,19 @@ C:\UserData\z004jchd\OneDrive - Siemens AG\Documents\PERSONNEL\COURS\Architectur
 Project File Date:  11/21/2022
 
 <h2>Output:</h2>
-Build target 'Target 1'
+Rebuild target 'Target 1'
+assembling Startup.s...
 assembling rk_motors.s...
-rk_motors.s(75): error: A1145E: Undefined exported symbol 'MOTEUR_GAUCHE_ON'
-assembling rk_motors_prise_en_main.s...
-".\stellaris_asm.axf" - 1 Error(s), 0 Warning(s).
-Target not created
-IPH_GPIOF , expecting opcode or Macro
-rk_motors_prise_en_main.s(13): error: A1163E: Unknown opcode GPIO_PORTD_BASE , expecting opcode or Macro
-rk_motors_prise_en_main.s(14): error: A1163E: Unknown opcode GPIO_PORTE_BASE , expecting opcode or Macro
-rk_motors_prise_en_main.s(15): error: A1163E: Unknown opcode GPIO_PORTF_BASE , expecting opcode or Macro
-rk_motors_prise_en_main.s(19): error: A1163E: Unknown opcode GPIO_O_DIR , expecting opcode or Macro
+assembling main.s...
+linking...
+Program Size: Code=1488 RO-data=0 RW-data=0 ZI-data=256  
+".\stellaris_asm.axf" - 0 Error(s), 0 Warning(s).
+Load "C:\\UserData\\z004jchd\\OneDrive - Siemens AG\\Documents\\PERSONNEL\\COURS\\Architecture\\µVision4\\PROJET\\Stellaris_ASM\\stellaris_asm.axf" 
+Warning: OSC to JTAG clock ratio violation - JTAG clock has been automatically adjusted to comply.
+Connecting: Mode=JTAG, Speed=600000Hz
+Connection failed!, error code=&d
+Error: Flash Download failed  -  Target DLL has been cancelled
+se_en_main.s(19): error: A1163E: Unknown opcode GPIO_O_DIR , expecting opcode or Macro
 rk_motors_prise_en_main.s(23): error: A1163E: Unknown opcode GPIO_O_DR2R , expecting opcode or Macro
 rk_motors_prise_en_main.s(27): error: A1163E: Unknown opcode GPIO_O_DEN , expecting opcode or Macro
 rk_motors_prise_en_main.s(30): error: A1163E: Unknown opcode GPIO_O_PUR , expecting opcode or Macro

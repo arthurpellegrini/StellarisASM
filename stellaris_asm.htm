@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\stellaris_asm.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\stellaris_asm.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5.03 [Build 76]: Last Updated: Mon Nov 21 15:58:58 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5.03 [Build 76]: Last Updated: Tue Nov 22 14:05:07 2022
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -13,7 +13,18 @@ Call chain for Maximum Stack Depth:</H3>
 Functions with no stack information
 </H3><UL>
  <LI><a href="#[4]">Reset_Handler</a>
- <LI><a href="#[5]">__main</a>
+ <LI><a href="#[5]">MOTEUR_INIT</a>
+ <LI><a href="#[7]">MOTEUR_DROIT_ON</a>
+ <LI><a href="#[8]">MOTEUR_DROIT_OFF</a>
+ <LI><a href="#[9]">MOTEUR_GAUCHE_ON</a>
+ <LI><a href="#[a]">MOTEUR_GAUCHE_OFF</a>
+ <LI><a href="#[b]">MOTEUR_DROIT_ARRIERE</a>
+ <LI><a href="#[c]">MOTEUR_DROIT_AVANT</a>
+ <LI><a href="#[d]">MOTEUR_GAUCHE_ARRIERE</a>
+ <LI><a href="#[e]">MOTEUR_GAUCHE_AVANT</a>
+ <LI><a href="#[f]">MOTEUR_DROIT_INVERSE</a>
+ <LI><a href="#[10]">MOTEUR_GAUCHE_INVERSE</a>
+ <LI><a href="#[6]">__main</a>
  <LI><a href="#[1]">NmiSR</a>
  <LI><a href="#[2]">FaultISR</a>
  <LI><a href="#[3]">IntDefaultHandler</a>
@@ -40,11 +51,49 @@ Function Pointers
 Global Symbols
 </H3>
 <P><STRONG><a name="[4]"></a>Reset_Handler</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup.o(RESET))
-<BR><BR>[Calls]<UL><LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+<BR><BR>[Calls]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
 </UL>
 
-<P><STRONG><a name="[5]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, main.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Reset_Handler
+<P><STRONG><a name="[5]"></a>MOTEUR_INIT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[7]"></a>MOTEUR_DROIT_ON</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[8]"></a>MOTEUR_DROIT_OFF</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[9]"></a>MOTEUR_GAUCHE_ON</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[a]"></a>MOTEUR_GAUCHE_OFF</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[b]"></a>MOTEUR_DROIT_ARRIERE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[c]"></a>MOTEUR_DROIT_AVANT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[d]"></a>MOTEUR_GAUCHE_ARRIERE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[e]"></a>MOTEUR_GAUCHE_AVANT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[f]"></a>MOTEUR_DROIT_INVERSE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[10]"></a>MOTEUR_GAUCHE_INVERSE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_motors.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[6]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, main.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_GAUCHE_AVANT
+<LI><a href="#[c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_DROIT_AVANT
+<LI><a href="#[9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_GAUCHE_ON
+<LI><a href="#[7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_DROIT_ON
+<LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_INIT
+</UL>
+<BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Reset_Handler
 </UL>
 <P>
 <H3>

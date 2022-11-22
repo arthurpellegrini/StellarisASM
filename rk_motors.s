@@ -1,6 +1,6 @@
 ; programme - Pilotage 2 Moteurs Evalbot par PWM tout en ASM (configure les pwms + GPIO)
 
-;Les pages se r�f�rent au datasheet lm3s9b92.pdf
+;Les pages se réfèrent au datasheet lm3s9b92.pdf
 
 ;Cablage :
 ;pin 10/PD0/PWM0 => input PWM du pont en H DRV8801RT
@@ -57,10 +57,10 @@ PWM1CMPB		EQU		PWM_BASE+0x09C
 PWM1GENA		EQU		PWM_BASE+0x0A0
 PWM1GENB		EQU		PWM_BASE+0x0A4
 
-; Vitesse : min = 0x1D0 <=> max = 0x001
+
 VITESSE			EQU		0x1A2	; Valeures plus petites => Vitesse plus rapide exemple 0x192
 								; Valeures plus grandes => Vitesse moins rapide exemple 0x1B2
-
+						
 						
 		AREA    |.text|, CODE, READONLY
 		ENTRY
@@ -133,7 +133,7 @@ MOTEUR_INIT
         ORR	r10, r10, #0x01 ;
         str r10, [r12]
 	
-	;;-----------PWM0 pour moteur 1 connect� � PD0
+	;;-----------PWM0 pour moteur 1 connecté à PD0
 	;;PWM0 produit PWM0 et PWM1 output
 	;;Config Modes PWM0 + mode GenA + mode GenB
 		ldr r12, = PWM0CTL
@@ -170,7 +170,7 @@ MOTEUR_INIT
 		ORR	r10,	r10,	#0x07
 		str	r10,	[r12]
 
-	;;-----------PWM2 pour moteur 2 connect� � PH0
+	;;-----------PWM2 pour moteur 2 connecté à PH0
 	;;PWM1block produit PWM2 et PWM3 output
 		;;Config Modes PWM2 + mode GenA + mode GenB
 		ldr r12, = PWM1CTL
@@ -226,7 +226,7 @@ MOTEUR_INIT
 		ldr	r10, [r12]
 		ORR	r10,	#(GPIO_0+GPIO_1+GPIO_2+GPIO_5)	
 		str	r10,[r12]	
-	;Port D : mise � 1 de slow Decay et 12V et mise � 0 pour dir et pwm
+	;Port D : mise à 1 de slow Decay et 12V et mise à 0 pour dir et pwm
 		ldr	r12, =(GPIODATA_D+((GPIO_0+GPIO_1+GPIO_2+GPIO_5)<<2)) 
 		mov	r10, #(GPIO_2+GPIO_5) ; #0x24
 		str	r10,[r12]
@@ -243,7 +243,7 @@ MOTEUR_INIT
 		ldr	r12, =GPIODEN_H
 		mov r10, #0x03	
 		str	r10,[r12]	
-	;Port H : mise � 1 pour dir 
+	;Port H : mise à 1 pour dir 
 		ldr	r12, =(GPIODATA_H +(GPIO_1<<2))
 		mov	r10, #0x02
 		str	r10,[r12]		
@@ -257,28 +257,28 @@ MOTEUR_DROIT_ON
 		;Enable sortie PWM0 (bit 0), p1145 
 		ldr	r12,	=PWMENABLE
 		ldr r10, [r12]
-		orr r10,	#0x01 ;bit 0 � 1
+		orr r10,	#0x01 ;bit 0 à 1
 		str	r10,	[r12]
 		BX	LR
 
 MOTEUR_DROIT_OFF 
 		ldr	r12,	=PWMENABLE
 		ldr r10,	[r12]
-		and	r10,	#0x0E	;bit 0 � 0
+		and	r10,	#0x0E	;bit 0 à 0
 		str	r10,	[r12]
 		BX	LR
 
-0
+MOTEUR_GAUCHE_ON
 		ldr	r12,	=PWMENABLE
 		ldr	r10, [r12]
-		orr	r10,	#0x04	;bit 2 � 1
+		orr	r10,	#0x04	;bit 2 à 1
 		str	r10,	[r12]
 		BX	LR
 
 MOTEUR_GAUCHE_OFF
 		ldr	r12,	=PWMENABLE
 		ldr	r10,	[r12]
-		and	r10,	#0x0B	;bit 2 � 0
+		and	r10,	#0x0B	;bit 2 à 0
 		str	r10,	[r12]
 		BX	LR
 

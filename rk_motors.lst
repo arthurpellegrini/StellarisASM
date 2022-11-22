@@ -7,7 +7,7 @@ ARM Macro Assembler    Page 1
     1 00000000         ; programme - Pilotage 2 Moteurs Evalbot par PWM tout en
                         ASM (configure les pwms + GPIO)
     2 00000000         
-    3 00000000         ;Les pages se r�f�rent au datasheet lm3s9b92.pdf
+    3 00000000         ;Les pages se réfèrent au datasheet lm3s9b92.pdf
     4 00000000         
     5 00000000         ;Cablage :
     6 00000000         ;pin 10/PD0/PWM0 => input PWM du pont en H DRV8801RT
@@ -159,7 +159,7 @@ ARM Macro Assembler    Page 3
                        PWM1GENB
                                EQU              PWM_BASE+0x0A4
    59 00000000         
-   60 00000000         ; Vitesse : min = 0x1D0 <=> max = 0x001
+   60 00000000         
    61 00000000 000001A2 
                        VITESSE EQU              0x1A2       ; Valeures plus pet
                                                             ites => Vitesse plu
@@ -272,7 +272,7 @@ ARM Macro Assembler    Page 5
   133 00000066 F04A 0A01       ORR              r10, r10, #0x01 ;
   134 0000006A F8CC A000       str              r10, [r12]
   135 0000006E         
-  136 0000006E         ;;-----------PWM0 pour moteur 1 connect� � PD0
+  136 0000006E         ;;-----------PWM0 pour moteur 1 connecté à PD0
   137 0000006E         ;;PWM0 produit PWM0 et PWM1 output
   138 0000006E         ;;Config Modes PWM0 + mode GenA + mode GenB
   139 0000006E F8DF C1D8       ldr              r12, = PWM0CTL
@@ -341,7 +341,7 @@ ARM Macro Assembler    Page 6
   170 000000BE F04A 0A07       ORR              r10, r10, #0x07
   171 000000C2 F8CC A000       str              r10, [r12]
   172 000000C6         
-  173 000000C6         ;;-----------PWM2 pour moteur 2 connect� � PH0
+  173 000000C6         ;;-----------PWM2 pour moteur 2 connecté à PH0
   174 000000C6         ;;PWM1block produit PWM2 et PWM3 output
   175 000000C6         ;;Config Modes PWM2 + mode GenA + mode GenB
   176 000000C6 F8DF C198       ldr              r12, = PWM1CTL
@@ -441,8 +441,8 @@ O_5)
   227 00000146 F04A 0A27       ORR              r10, #(GPIO_0+GPIO_1+GPIO_2+GPI
 O_5)
   228 0000014A F8CC A000       str              r10,[r12]
-  229 0000014E         ;Port D : mise � 1 de slow Decay et 12V et mise � 0 
-                       pour dir et pwm
+  229 0000014E         ;Port D : mise à 1 de slow Decay et 12V et mise à 0 po
+                       ur dir et pwm
   230 0000014E F8DF C134       ldr              r12, =(GPIODATA_D+((GPIO_0+GPIO
 _1+GPIO_2+GPIO_5)<<2))
   231 00000152 F04F 0A24       mov              r10, #(GPIO_2+GPIO_5) ; #0x24
@@ -466,7 +466,7 @@ ARM Macro Assembler    Page 8
   243 00000172 F8DF C11C       ldr              r12, =GPIODEN_H
   244 00000176 F04F 0A03       mov              r10, #0x03
   245 0000017A F8CC A000       str              r10,[r12]
-  246 0000017E         ;Port H : mise � 1 pour dir 
+  246 0000017E         ;Port H : mise à 1 pour dir 
   247 0000017E F8DF C114       ldr              r12, =(GPIODATA_H +(GPIO_1<<2))
   248 00000182 F04F 0A02       mov              r10, #0x02
   249 00000186 F8CC A000       str              r10,[r12]
@@ -481,28 +481,28 @@ ARM Macro Assembler    Page 8
   257 0000018C         ;Enable sortie PWM0 (bit 0), p1145 
   258 0000018C F8DF C108       ldr              r12, =PWMENABLE
   259 00000190 F8DC A000       ldr              r10, [r12]
-  260 00000194 F04A 0A01       orr              r10, #0x01  ;bit 0 � 1
+  260 00000194 F04A 0A01       orr              r10, #0x01  ;bit 0 à 1
   261 00000198 F8CC A000       str              r10, [r12]
   262 0000019C 4770            BX               LR
   263 0000019E         
   264 0000019E         MOTEUR_DROIT_OFF
   265 0000019E F8DF C0F8       ldr              r12, =PWMENABLE
   266 000001A2 F8DC A000       ldr              r10, [r12]
-  267 000001A6 F00A 0A0E       and              r10, #0x0E  ;bit 0 � 0
+  267 000001A6 F00A 0A0E       and              r10, #0x0E  ;bit 0 à 0
   268 000001AA F8CC A000       str              r10, [r12]
   269 000001AE 4770            BX               LR
   270 000001B0         
-  271 000001B0         0
+  271 000001B0         MOTEUR_GAUCHE_ON
   272 000001B0 F8DF C0E4       ldr              r12, =PWMENABLE
   273 000001B4 F8DC A000       ldr              r10, [r12]
-  274 000001B8 F04A 0A04       orr              r10, #0x04  ;bit 2 � 1
+  274 000001B8 F04A 0A04       orr              r10, #0x04  ;bit 2 à 1
   275 000001BC F8CC A000       str              r10, [r12]
   276 000001C0 4770            BX               LR
   277 000001C2         
   278 000001C2         MOTEUR_GAUCHE_OFF
   279 000001C2 F8DF C0D4       ldr              r12, =PWMENABLE
   280 000001C6 F8DC A000       ldr              r10, [r12]
-  281 000001CA F00A 0A0B       and              r10, #0x0B  ;bit 2 � 0
+  281 000001CA F00A 0A0B       and              r10, #0x0B  ;bit 2 à 0
   282 000001CE F8CC A000       str              r10, [r12]
   283 000001D2 4770            BX               LR
   284 000001D4         
@@ -597,3 +597,488 @@ ors.d -o.\rk_motors.o -I"C:\Program Files\Keil\ARM\RV31\INC" -I"C:\Program File
 s\Keil\ARM\CMSIS\Include" -I"C:\Program Files\Keil\ARM\Inc\Luminary" --predefin
 e="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --list=.\rk_motors.lst rk_mot
 ors.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 65 in file rk_motors.s
+   Uses
+      None
+Comment: .text unused
+MOTEUR_DROIT_ARRIERE 000001D4
+
+Symbol: MOTEUR_DROIT_ARRIERE
+   Definitions
+      At line 285 in file rk_motors.s
+   Uses
+      At line 73 in file rk_motors.s
+Comment: MOTEUR_DROIT_ARRIERE used once
+MOTEUR_DROIT_AVANT 000001E2
+
+Symbol: MOTEUR_DROIT_AVANT
+   Definitions
+      At line 292 in file rk_motors.s
+   Uses
+      At line 72 in file rk_motors.s
+Comment: MOTEUR_DROIT_AVANT used once
+MOTEUR_DROIT_INVERSE 0000020C
+
+Symbol: MOTEUR_DROIT_INVERSE
+   Definitions
+      At line 313 in file rk_motors.s
+   Uses
+      At line 74 in file rk_motors.s
+Comment: MOTEUR_DROIT_INVERSE used once
+MOTEUR_DROIT_OFF 0000019E
+
+Symbol: MOTEUR_DROIT_OFF
+   Definitions
+      At line 264 in file rk_motors.s
+   Uses
+      At line 71 in file rk_motors.s
+Comment: MOTEUR_DROIT_OFF used once
+MOTEUR_DROIT_ON 0000018C
+
+Symbol: MOTEUR_DROIT_ON
+   Definitions
+      At line 256 in file rk_motors.s
+   Uses
+      At line 70 in file rk_motors.s
+Comment: MOTEUR_DROIT_ON used once
+MOTEUR_GAUCHE_ARRIERE 000001F0
+
+Symbol: MOTEUR_GAUCHE_ARRIERE
+   Definitions
+      At line 299 in file rk_motors.s
+   Uses
+      At line 78 in file rk_motors.s
+Comment: MOTEUR_GAUCHE_ARRIERE used once
+MOTEUR_GAUCHE_AVANT 000001FE
+
+Symbol: MOTEUR_GAUCHE_AVANT
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+   Definitions
+      At line 306 in file rk_motors.s
+   Uses
+      At line 77 in file rk_motors.s
+Comment: MOTEUR_GAUCHE_AVANT used once
+MOTEUR_GAUCHE_INVERSE 0000021E
+
+Symbol: MOTEUR_GAUCHE_INVERSE
+   Definitions
+      At line 321 in file rk_motors.s
+   Uses
+      At line 79 in file rk_motors.s
+Comment: MOTEUR_GAUCHE_INVERSE used once
+MOTEUR_GAUCHE_OFF 000001C2
+
+Symbol: MOTEUR_GAUCHE_OFF
+   Definitions
+      At line 278 in file rk_motors.s
+   Uses
+      At line 76 in file rk_motors.s
+Comment: MOTEUR_GAUCHE_OFF used once
+MOTEUR_GAUCHE_ON 000001B0
+
+Symbol: MOTEUR_GAUCHE_ON
+   Definitions
+      At line 271 in file rk_motors.s
+   Uses
+      At line 75 in file rk_motors.s
+Comment: MOTEUR_GAUCHE_ON used once
+MOTEUR_INIT 00000000
+
+Symbol: MOTEUR_INIT
+   Definitions
+      At line 82 in file rk_motors.s
+   Uses
+      At line 69 in file rk_motors.s
+Comment: MOTEUR_INIT used once
+12 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+GPIOAFSEL_D 40007420
+
+Symbol: GPIOAFSEL_D
+   Definitions
+      At line 30 in file rk_motors.s
+   Uses
+      At line 124 in file rk_motors.s
+Comment: GPIOAFSEL_D used once
+GPIOAFSEL_H 40027420
+
+Symbol: GPIOAFSEL_H
+   Definitions
+      At line 38 in file rk_motors.s
+   Uses
+      At line 131 in file rk_motors.s
+Comment: GPIOAFSEL_H used once
+GPIODATA_D 40007000
+
+Symbol: GPIODATA_D
+   Definitions
+      At line 25 in file rk_motors.s
+   Uses
+      At line 230 in file rk_motors.s
+      At line 287 in file rk_motors.s
+      At line 294 in file rk_motors.s
+      At line 315 in file rk_motors.s
+
+GPIODATA_H 40027000
+
+Symbol: GPIODATA_H
+   Definitions
+      At line 33 in file rk_motors.s
+   Uses
+      At line 247 in file rk_motors.s
+      At line 301 in file rk_motors.s
+      At line 308 in file rk_motors.s
+      At line 323 in file rk_motors.s
+
+GPIODEN_D 4000751C
+
+Symbol: GPIODEN_D
+   Definitions
+      At line 28 in file rk_motors.s
+   Uses
+      At line 225 in file rk_motors.s
+Comment: GPIODEN_D used once
+GPIODEN_H 4002751C
+
+Symbol: GPIODEN_H
+   Definitions
+      At line 36 in file rk_motors.s
+   Uses
+      At line 243 in file rk_motors.s
+Comment: GPIODEN_H used once
+GPIODIR_D 40007400
+
+Symbol: GPIODIR_D
+   Definitions
+      At line 26 in file rk_motors.s
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+   Uses
+      At line 215 in file rk_motors.s
+Comment: GPIODIR_D used once
+GPIODIR_H 40027400
+
+Symbol: GPIODIR_H
+   Definitions
+      At line 34 in file rk_motors.s
+   Uses
+      At line 235 in file rk_motors.s
+Comment: GPIODIR_H used once
+GPIODR2R_D 40007500
+
+Symbol: GPIODR2R_D
+   Definitions
+      At line 27 in file rk_motors.s
+   Uses
+      At line 220 in file rk_motors.s
+Comment: GPIODR2R_D used once
+GPIODR2R_H 40027500
+
+Symbol: GPIODR2R_H
+   Definitions
+      At line 35 in file rk_motors.s
+   Uses
+      At line 239 in file rk_motors.s
+Comment: GPIODR2R_H used once
+GPIOPCTL_D 4000752C
+
+Symbol: GPIOPCTL_D
+   Definitions
+      At line 29 in file rk_motors.s
+   Uses
+      At line 110 in file rk_motors.s
+Comment: GPIOPCTL_D used once
+GPIOPCTL_H 4002752C
+
+Symbol: GPIOPCTL_H
+   Definitions
+      At line 37 in file rk_motors.s
+   Uses
+      At line 118 in file rk_motors.s
+Comment: GPIOPCTL_H used once
+GPIO_0 00000001
+
+Symbol: GPIO_0
+   Definitions
+      At line 14 in file rk_motors.s
+   Uses
+      At line 217 in file rk_motors.s
+      At line 222 in file rk_motors.s
+      At line 227 in file rk_motors.s
+      At line 230 in file rk_motors.s
+
+GPIO_1 00000002
+
+Symbol: GPIO_1
+   Definitions
+      At line 15 in file rk_motors.s
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Absolute symbols
+
+   Uses
+      At line 217 in file rk_motors.s
+      At line 222 in file rk_motors.s
+      At line 227 in file rk_motors.s
+      At line 230 in file rk_motors.s
+      At line 247 in file rk_motors.s
+      At line 287 in file rk_motors.s
+      At line 294 in file rk_motors.s
+      At line 301 in file rk_motors.s
+      At line 308 in file rk_motors.s
+      At line 315 in file rk_motors.s
+      At line 317 in file rk_motors.s
+      At line 323 in file rk_motors.s
+      At line 325 in file rk_motors.s
+
+GPIO_2 00000004
+
+Symbol: GPIO_2
+   Definitions
+      At line 16 in file rk_motors.s
+   Uses
+      At line 217 in file rk_motors.s
+      At line 222 in file rk_motors.s
+      At line 227 in file rk_motors.s
+      At line 230 in file rk_motors.s
+      At line 231 in file rk_motors.s
+
+GPIO_5 00000020
+
+Symbol: GPIO_5
+   Definitions
+      At line 17 in file rk_motors.s
+   Uses
+      At line 217 in file rk_motors.s
+      At line 222 in file rk_motors.s
+      At line 227 in file rk_motors.s
+      At line 230 in file rk_motors.s
+      At line 231 in file rk_motors.s
+
+PORTD_BASE 40007000
+
+Symbol: PORTD_BASE
+   Definitions
+      At line 24 in file rk_motors.s
+   Uses
+      At line 25 in file rk_motors.s
+      At line 26 in file rk_motors.s
+      At line 27 in file rk_motors.s
+      At line 28 in file rk_motors.s
+      At line 29 in file rk_motors.s
+      At line 30 in file rk_motors.s
+
+PORTH_BASE 40027000
+
+Symbol: PORTH_BASE
+   Definitions
+      At line 32 in file rk_motors.s
+   Uses
+      At line 33 in file rk_motors.s
+
+
+
+ARM Macro Assembler    Page 4 Alphabetic symbol ordering
+Absolute symbols
+
+      At line 34 in file rk_motors.s
+      At line 35 in file rk_motors.s
+      At line 36 in file rk_motors.s
+      At line 37 in file rk_motors.s
+      At line 38 in file rk_motors.s
+
+PWM0CMPA 40028058
+
+Symbol: PWM0CMPA
+   Definitions
+      At line 47 in file rk_motors.s
+   Uses
+      At line 159 in file rk_motors.s
+Comment: PWM0CMPA used once
+PWM0CMPB 4002805C
+
+Symbol: PWM0CMPB
+   Definitions
+      At line 48 in file rk_motors.s
+   Uses
+      At line 163 in file rk_motors.s
+Comment: PWM0CMPB used once
+PWM0CTL 40028040
+
+Symbol: PWM0CTL
+   Definitions
+      At line 45 in file rk_motors.s
+   Uses
+      At line 139 in file rk_motors.s
+      At line 168 in file rk_motors.s
+
+PWM0GENA 40028060
+
+Symbol: PWM0GENA
+   Definitions
+      At line 49 in file rk_motors.s
+   Uses
+      At line 143 in file rk_motors.s
+Comment: PWM0GENA used once
+PWM0GENB 40028064
+
+Symbol: PWM0GENB
+   Definitions
+      At line 50 in file rk_motors.s
+   Uses
+      At line 148 in file rk_motors.s
+Comment: PWM0GENB used once
+PWM0LOAD 40028050
+
+Symbol: PWM0LOAD
+   Definitions
+      At line 46 in file rk_motors.s
+   Uses
+      At line 155 in file rk_motors.s
+Comment: PWM0LOAD used once
+PWM1CMPA 40028098
+
+Symbol: PWM1CMPA
+   Definitions
+
+
+
+ARM Macro Assembler    Page 5 Alphabetic symbol ordering
+Absolute symbols
+
+      At line 55 in file rk_motors.s
+   Uses
+      At line 198 in file rk_motors.s
+Comment: PWM1CMPA used once
+PWM1CMPB 4002809C
+
+Symbol: PWM1CMPB
+   Definitions
+      At line 56 in file rk_motors.s
+   Uses
+      At line 202 in file rk_motors.s
+Comment: PWM1CMPB used once
+PWM1CTL 40028080
+
+Symbol: PWM1CTL
+   Definitions
+      At line 53 in file rk_motors.s
+   Uses
+      At line 176 in file rk_motors.s
+      At line 207 in file rk_motors.s
+
+PWM1GENA 400280A0
+
+Symbol: PWM1GENA
+   Definitions
+      At line 57 in file rk_motors.s
+   Uses
+      At line 180 in file rk_motors.s
+Comment: PWM1GENA used once
+PWM1GENB 400280A4
+
+Symbol: PWM1GENB
+   Definitions
+      At line 58 in file rk_motors.s
+   Uses
+      At line 186 in file rk_motors.s
+Comment: PWM1GENB used once
+PWM1LOAD 40028090
+
+Symbol: PWM1LOAD
+   Definitions
+      At line 54 in file rk_motors.s
+   Uses
+      At line 194 in file rk_motors.s
+Comment: PWM1LOAD used once
+PWMENABLE 40028008
+
+Symbol: PWMENABLE
+   Definitions
+      At line 42 in file rk_motors.s
+   Uses
+      At line 258 in file rk_motors.s
+      At line 265 in file rk_motors.s
+      At line 272 in file rk_motors.s
+      At line 279 in file rk_motors.s
+
+PWM_BASE 40028000
+
+Symbol: PWM_BASE
+
+
+
+ARM Macro Assembler    Page 6 Alphabetic symbol ordering
+Absolute symbols
+
+   Definitions
+      At line 41 in file rk_motors.s
+   Uses
+      At line 42 in file rk_motors.s
+      At line 45 in file rk_motors.s
+      At line 46 in file rk_motors.s
+      At line 47 in file rk_motors.s
+      At line 48 in file rk_motors.s
+      At line 49 in file rk_motors.s
+      At line 50 in file rk_motors.s
+      At line 53 in file rk_motors.s
+      At line 54 in file rk_motors.s
+      At line 55 in file rk_motors.s
+      At line 56 in file rk_motors.s
+      At line 57 in file rk_motors.s
+      At line 58 in file rk_motors.s
+
+SYSCTL_RCGC0 400FE100
+
+Symbol: SYSCTL_RCGC0
+   Definitions
+      At line 20 in file rk_motors.s
+   Uses
+      At line 83 in file rk_motors.s
+Comment: SYSCTL_RCGC0 used once
+SYSCTL_RCGC2 400FE108
+
+Symbol: SYSCTL_RCGC2
+   Definitions
+      At line 21 in file rk_motors.s
+   Uses
+      At line 93 in file rk_motors.s
+      At line 99 in file rk_motors.s
+
+VITESSE 000001A2
+
+Symbol: VITESSE
+   Definitions
+      At line 61 in file rk_motors.s
+   Uses
+      At line 160 in file rk_motors.s
+      At line 199 in file rk_motors.s
+
+35 symbols
+381 symbols in table
