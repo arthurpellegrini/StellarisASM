@@ -36,10 +36,65 @@ PINSE_1_2				EQU		0x03		; bumpers 1 & 2 sur les broches (0000 0011)
 ; PINS port output
 PINSF_4_5				EQU		0x30		; led 1 & 2 sur broches 4 & 5 (0011 0000)
 	
-; blinking frequency
+; Blinking frequency
 DUREE   			EQU     0x002FFFFF	; Random Value
+
+; Boucle d'attente
+WAIT_S	
+	ldr r10, =0x0FFFFF  
+wait		subs r10, #1
+			bne wait
+			BX	LR
+					
+
+;-----------------------CONFIGURATION LED
+CONFIGURATION_LED
+        ldr r10, = PINSF_4_5
+        ldr r7, = GPIO_PORTF_BASE+GPIO_O_DIR   
+        str r10, [r7]
+		    
+        ldr r7, = GPIO_PORTF_BASE+GPIO_O_DEN
+        str r10, [r7]
+ 
+		ldr r7, = GPIO_PORTF_BASE+GPIO_O_DR2R		
+        str r10, [r7]
 		
+		; allumer les leds
+		mov r3, #PINSF_4_5    
+
+		;; Allume portF broches 4 et 5   					
+		ldr r7, = GPIO_PORTF_BASE + (PINSF_4_5<<2) 
+
+		;; pour eteindre LED 
+        mov r2, #0x000       					
+		BX LR
+
+;-----------------------CONFIGURATION SWITCH
+CONFIGURATION_SWITCH
+		ldr r10, = PINSD_6_7
 		
+		ldr r8, = GPIO_PORTD_BASE+GPIO_O_DEN
+		str r10, [r8]
+ 
+		ldr r8, = GPIO_PORTD_BASE+GPIO_O_PUR	
+		str r10, [r8]
+		
+		ldr r8, = GPIO_PORTD_BASE + (PINSD_6_7<<2) 
+		BX LR
+	
+;----------------------CONFIGURATION BUMPER
+CONFIGURATION_BUMPER
+		ldr r10, = PINSE_1_2
+		
+		ldr r9, = GPIO_PORTE_BASE+GPIO_O_DEN
+		str r10, [r9]
+ 
+		ldr r9, = GPIO_PORTE_BASE+GPIO_O_PUR	
+		str r10, [r9]
+		ldr r9, = GPIO_PORTE_BASE + (PINSE_1_2<<2) 
+		BX LR
+
+
 		ENTRY
 		EXPORT	__main
 		
@@ -58,67 +113,24 @@ DUREE   			EQU     0x002FFFFF	; Random Value
 		IMPORT  MOTEUR_GAUCHE_ARRIERE		; moteur gauche tourne vers l'arrière
 		IMPORT  MOTEUR_GAUCHE_INVERSE		; inverse le sens de rotation du moteur gauche
 
-
+			
 __main	
+
 		; ;; Enable the Port F peripheral clock by setting bit 5 (0x20 == 0b100000)		(p291 datasheet de lm3s9B96.pdf)
 		; ;;														 (GPIO::FEDCBA)
-		ldr r6, = SYSCTL_PERIPH_GPIOF  			;; RCGC2
-        mov r0, #0x00000038  					;; Enable clock sur GPIO F E D (0011 1000)
+		ldr r7, = SYSCTL_PERIPH_GPIOF  			;; RCGC2
+        mov r10, #0x00000038  					;; Enable clock sur GPIO F E D (0011 1000)
 		; ;;														 									 (GPIO::FEDCBA)
-        str r0, [r6]
+        str r10, [r7]
 	
 		; ;; "There must be a delay of 3 system clocks before any GPIO reg. access  (p413 datasheet de lm3s9B92.pdf)
 		nop	   									;; tres tres important....
 		nop	   
 		nop	   									;; pas necessaire en simu ou en debbug step by step...
-	
-		;-----------------------CONFIGURATION LED
-        ldr r0, = PINSF_4_5
-        ldr r6, = GPIO_PORTF_BASE+GPIO_O_DIR   
-        str r0, [r6]
-		    
-        ldr r6, = GPIO_PORTF_BASE+GPIO_O_DEN
-        str r0, [r6]
- 
-		ldr r6, = GPIO_PORTF_BASE+GPIO_O_DR2R		
-        str r0, [r6]
-		
-		; allumer les leds
-		mov r2, #PINSF_4_5    
 
-		;; Allume portF broches 4 et 5   					
-		ldr r6, = GPIO_PORTF_BASE + (PINSF_4_5<<2) 
-
-		;; pour eteindre LED 
-        mov r1, #0x000       					
-
-		;-----------------------FIN CONFIGURATION LED 
-		
-		;-----------------------CONFIGURATION SWITCH
-		ldr r0, = PINSD_6_7
-		
-		ldr r7, = GPIO_PORTD_BASE+GPIO_O_DEN
-		str r0, [r7]
- 
-		ldr r7, = GPIO_PORTD_BASE+GPIO_O_PUR	
-		str r0, [r7]
-		
-		ldr r7, = GPIO_PORTD_BASE + (PINSD_6_7<<2) 
-		;-----------------------FIN CONFIGURATION SWITCH
-
-		;;----------------------CONFIGURATION BUMPER
-		ldr r0, = PINSE_1_2
-		
-		ldr r8, = GPIO_PORTE_BASE+GPIO_O_DEN
-		str r0, [r8]
- 
-		ldr r8, = GPIO_PORTE_BASE+GPIO_O_PUR	
-		str r0, [r8]
-		ldr r8, = GPIO_PORTE_BASE + (PINSE_1_2<<2) 
-		;;----------------------FIN CONFIGURATION BUMPER
-
-
-
+		BL	CONFIGURATION_LED
+		BL	CONFIGURATION_SWITCH
+		BL	CONFIGURATION_BUMPER
 
 		;; BL Branchement vers un lien (sous programme)
 
@@ -129,34 +141,31 @@ __main
 		BL	MOTEUR_DROIT_ON
 		BL	MOTEUR_GAUCHE_ON
 
-		
-loop	  
-        ; Boucle de pilotage des 2 Moteurs (Evalbot tourne sur lui même)
+		; Boucle de pilotage des 2 Moteurs (Evalbot tourne sur lui même)
+loop	
 		; Evalbot avance droit devant
 		BL	MOTEUR_DROIT_AVANT	   
 		BL	MOTEUR_GAUCHE_AVANT
 		
 		; Avancement pendant une période (deux WAIT)
-		BL	WAIT	; BL (Branchement vers le lien WAIT); possibilité de retour à la suite avec (BX LR)
-		BL	WAIT
+		BL	WAIT_S	; BL (Branchement vers le lien WAIT); possibilité de retour à la suite avec (BX LR)
+		BL	WAIT_S
 		
 		; Rotation à droite de l'Evalbot pendant une demi-période (1 seul WAIT)
-		;BL	MOTEUR_DROIT_ARRIERE   ; MOTEUR_DROIT_INVERSE
-		;BL	WAIT
-
-		ldr r3, [r7]							;; on récupère les entrées des switchs
-		ldr r4, [r8]							;; on récupère les entrées des bumpers
-		str r1, [r6]    						;; Eteint LED car r2 = 0x00     		
-		BL WAIT
-        str r2, [r6]  							;; Allume portF broche 4 & 5 : 00110000 (contenu de r3)
-		BL WAIT
+		BL	MOTEUR_DROIT_ARRIERE   ; MOTEUR_DROIT_INVERSE
+		
+		;; GET_ENTRIES
+		ldr r4, [r8]							;; on récupère les entrées des switchs
+		ldr r5, [r9]							;; on récupère les entrées des bumpers
+		
+		;; BLINKING_LED
+		str r2, [r7]    						;; Eteint LED car r3 = 0x00  
+		BL 	WAIT_S	
+        str r3, [r7] 		;; Allume portF broche 4 & 5 : 00110000 (contenu de r3)
+		BL	WAIT_S
+		
 
 		b	loop
-
-		;; Boucle d'attante
-WAIT	ldr r0, =0xAFFFFF 
-wait1	subs r0, #1
-        bne wait1
 		
 		;; retour à la suite du lien de branchement
 		BX	LR

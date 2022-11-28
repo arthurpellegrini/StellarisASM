@@ -80,26 +80,26 @@ VITESSE			EQU		0x1A2	; Valeures plus petites => Vitesse plus rapide exemple 0x19
 
 
 MOTEUR_INIT	
-		ldr r12, = SYSCTL_RCGC0
-		ldr	r10, [r12]
-        ORR	r10, r10, #0x00100000  ;;bit 20 = PWM recoit clock: ON (p271) 
-        str r10, [r12]
+		ldr r6, = SYSCTL_RCGC0
+		ldr	r0, [R6]
+        ORR	r0, r0, #0x00100000  ;;bit 20 = PWM recoit clock: ON (p271) 
+        str r0, [r6]
 
 	;ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_1);PWM clock is processor clock /1
 	;Je ne fais rien car par defaut = OK!!
 	;*(int *) (0x400FE060)= *(int *)(0x400FE060)...;
 	
   	;RCGC2 :  Enable port D GPIO(p291 ) car Moteur Droit sur port D 
-		ldr r12, = SYSCTL_RCGC2
-		ldr	r10, [r12] 		
-        ORR	r10, r10, #0x08  ;; Enable port D GPIO 
-        str r10, [r12]
+		ldr r6, = SYSCTL_RCGC2
+		ldr	r0, [R6] 		
+        ORR	r0, r0, #0x08  ;; Enable port D GPIO 
+        str r0, [r6]
 
 	;MOT2 : RCGC2 :  Enable port H GPIO  (2eme moteurs)
-		ldr r12, = SYSCTL_RCGC2
-		ldr	r10, [r12] 
-        ORR	r10, r10, #0x80  ;; Enable port H GPIO 
-        str r10, [r12] 
+		ldr r6, = SYSCTL_RCGC2
+		ldr	r0, [R6] 
+        ORR	r0, r0, #0x80  ;; Enable port H GPIO 
+        str r0, [r6] 
 		
 		nop
 		nop
@@ -107,146 +107,146 @@ MOTEUR_INIT
 	 
 	;;Pin muxing pour PWM, port D, reg. GPIOPCTL(p444), 4bits de PCM0=0001<=>PWM (voir p1261)
 	;;il faut mettre 1 pour avoir PD0=PWM0 et PD1=PWM1
-		ldr r12, = GPIOPCTL_D
-		;ldr	r10, [r12] 	 ;;	*(int *)(0x40007000+0x0000052C)=1;
-        ;ORR	r10, r10, #0x01 ;; Port D, pin 1 = PWM 
-		mov	r10, #0x01  
-        str r10, [r12]
+		ldr r6, = GPIOPCTL_D
+		;ldr	r0, [R6] 	 ;;	*(int *)(0x40007000+0x0000052C)=1;
+        ;ORR	r0, r0, #0x01 ;; Port D, pin 1 = PWM 
+		mov	r0, #0x01  
+        str r0, [r6]
 		
 	;;MOT2 : Pin muxing pour PWM, port H, reg. GPIOPCTL(p444), 4bits de PCM0=0001<=>PWM (voir p1261)
 	;;il faut mettre mux = 2 pour avoir PH0=PWM2 et PH1=PWM3
-		ldr r12, = GPIOPCTL_H 
-		mov	r10, #0x02 
-        str r10, [r12]
+		ldr r6, = GPIOPCTL_H 
+		mov	r0, #0x02 
+        str r0, [r6]
 		
 	;;Alternate Function Select (p 426), PD0 utilise alernate fonction (PWM au dessus)
 	;;donc PD0 = 1
-		ldr r12, = GPIOAFSEL_D
-		ldr	r10, [r12] 	  ;*(int *)(0x40007000+0x00000420)= *(int *)(0x40007000+0x00000420) | 0x00000001;
-        ORR	r10, r10, #0x01 ;
-        str r10, [r12]
+		ldr r6, = GPIOAFSEL_D
+		ldr	r0, [R6] 	  ;*(int *)(0x40007000+0x00000420)= *(int *)(0x40007000+0x00000420) | 0x00000001;
+        ORR	r0, r0, #0x01 ;
+        str r0, [r6]
 
 	;;MOT2 : Alternate Function Select (p 426), PH0 utilise PWM donc Alternate funct
 	;;donc PH0 = 1
-		ldr r12, = GPIOAFSEL_H
-		ldr	r10, [r12] 	  ;*(int *)(0x40007000+0x00000420)= *(int *)(0x40007000+0x00000420) | 0x00000001;
-        ORR	r10, r10, #0x01 ;
-        str r10, [r12]
+		ldr r6, = GPIOAFSEL_H
+		ldr	r0, [R6] 	  ;*(int *)(0x40007000+0x00000420)= *(int *)(0x40007000+0x00000420) | 0x00000001;
+        ORR	r0, r0, #0x01 ;
+        str r0, [r6]
 	
 	;;-----------PWM0 pour moteur 1 connecté à PD0
 	;;PWM0 produit PWM0 et PWM1 output
 	;;Config Modes PWM0 + mode GenA + mode GenB
-		ldr r12, = PWM0CTL
-		mov	r10, #2		;Mode up-down-up-down, pas synchro
-        str r10, [r12]	
+		ldr r6, = PWM0CTL
+		mov	r0, #2		;Mode up-down-up-down, pas synchro
+        str r0, [r6]	
 		
-		ldr r12, =PWM0GENA ;en decomptage, qd comparateurA = compteur => sortie pwmA=0
+		ldr r6, =PWM0GENA ;en decomptage, qd comparateurA = compteur => sortie pwmA=0
 						;en comptage croissant, qd comparateurA = compteur => sortie pwmA=1
-		mov	r10,	#0x0B0 	;0B0=10110000 => ACTCMPBD=00 (B down:rien), ACTCMPBU=00(B up rien)
-		str r10, [r12]	;ACTCMPAD=10 (A down:pwmA low), ACTCMPAU=11 (A up:pwmA high) , ACTLOAD=00,ACTZERO=00  
+		mov	r0,	#0x0B0 	;0B0=10110000 => ACTCMPBD=00 (B down:rien), ACTCMPBU=00(B up rien)
+		str r0, [r6]	;ACTCMPAD=10 (A down:pwmA low), ACTCMPAU=11 (A up:pwmA high) , ACTLOAD=00,ACTZERO=00  
 		
-		ldr r12, =PWM0GENB;en comptage croissant, qd comparateurB = compteur => sortie pwmA=1
-		mov	r10,	#0x0B00	;en decomptage, qd comparateurB = compteur => sortie pwmB=0
-		str r10, [r12]	
+		ldr r6, =PWM0GENB;en comptage croissant, qd comparateurB = compteur => sortie pwmA=1
+		mov	r0,	#0x0B00	;en decomptage, qd comparateurB = compteur => sortie pwmB=0
+		str r0, [r6]	
 	;Config Compteur, comparateur A et comparateur B
   	;;#define PWM_PERIOD (ROM_SysCtlClockGet() / 16000),
 	;;en mesure : SysCtlClockGet=0F42400h, /16=0x3E8, 
 	;;on divise par 2 car moteur 6v sur alim 12v
-		ldr	r12, =PWM0LOAD ;PWM0LOAD=periode/2 =0x1F4
-		mov r10,	#0x1F4
-		str	r10,[r12]
+		ldr	r6, =PWM0LOAD ;PWM0LOAD=periode/2 =0x1F4
+		mov r0,	#0x1F4
+		str	r0,[r6]
 		
-		ldr	r12, =PWM0CMPA ;Valeur rapport cyclique : pour 10% => 1C2h si clock = 0F42400
-		mov	r10, #VITESSE
-		str	r10, [r12]  
+		ldr	r6, =PWM0CMPA ;Valeur rapport cyclique : pour 10% => 1C2h si clock = 0F42400
+		mov	r0, #VITESSE
+		str	r0, [r6]  
 		
-		ldr	r12, =PWM0CMPB ;PWM0CMPB recoit meme valeur. (rapport cyclique depend de CMPA)
-		mov	r10,	#0x1F4	
-		str	r10,	[r12]
+		ldr	r6, =PWM0CMPB ;PWM0CMPB recoit meme valeur. (rapport cyclique depend de CMPA)
+		mov	r0,	#0x1F4	
+		str	r0,	[r6]
 		
 	;Control PWM : active PWM Generator 0 (p1167): Enable+up/down + Enable counter debug mod
-		ldr	r12, =PWM0CTL 
-		ldr	r10, [r12]	
-		ORR	r10,	r10,	#0x07
-		str	r10,	[r12]
+		ldr	r6, =PWM0CTL 
+		ldr	r0, [r6]	
+		ORR	r0,	r0,	#0x07
+		str	r0,	[r6]
 
 	;;-----------PWM2 pour moteur 2 connecté à PH0
 	;;PWM1block produit PWM2 et PWM3 output
 		;;Config Modes PWM2 + mode GenA + mode GenB
-		ldr r12, = PWM1CTL
-		mov	r10, #2		;Mode up-down-up-down, pas synchro
-        str r10, [r12]	;*(int *)(0x40028000+0x040)=2;
+		ldr r6, = PWM1CTL
+		mov	r0, #2		;Mode up-down-up-down, pas synchro
+        str r0, [r6]	;*(int *)(0x40028000+0x040)=2;
 		
-		ldr r12, =PWM1GENA ;en decomptage, qd comparateurA = compteur => sortie pwmA=0
+		ldr r6, =PWM1GENA ;en decomptage, qd comparateurA = compteur => sortie pwmA=0
 						;en comptage croissant, qd comparateurA = compteur => sortie pwmA=1
-		mov	r10,	#0x0B0 	;0B0=10110000 => ACTCMPBD=00 (B down:rien), ACTCMPBU=00(B up rien)
-		str r10, [r12]	;ACTCMPAD=10 (A down:pwmA low), ACTCMPAU=11 (A up:pwmA high) , ACTLOAD=00,ACTZERO=00  
+		mov	r0,	#0x0B0 	;0B0=10110000 => ACTCMPBD=00 (B down:rien), ACTCMPBU=00(B up rien)
+		str r0, [r6]	;ACTCMPAD=10 (A down:pwmA low), ACTCMPAU=11 (A up:pwmA high) , ACTLOAD=00,ACTZERO=00  
 		
  		;*(int *)(0x40028000+0x060)=0x0B0; //
-		ldr r12, =PWM1GENB	;*(int *)(0x40028000+0x064)=0x0B00;
-		mov	r10,	#0x0B00	;en decomptage, qd comparateurB = compteur => sortie pwmB=0
-		str r10, [r12]	;en comptage croissant, qd comparateurB = compteur => sortie pwmA=1
+		ldr r6, =PWM1GENB	;*(int *)(0x40028000+0x064)=0x0B00;
+		mov	r0,	#0x0B00	;en decomptage, qd comparateurB = compteur => sortie pwmB=0
+		str r0, [r6]	;en comptage croissant, qd comparateurB = compteur => sortie pwmA=1
 	;Config Compteur, comparateur A et comparateur B
   	;;#define PWM_PERIOD (ROM_SysCtlClockGet() / 16000),
 	;;en mesure : SysCtlClockGet=0F42400h, /16=0x3E8, 
 	;;on divise par 2 car moteur 6v sur alim 12v
 		;*(int *)(0x40028000+0x050)=0x1F4; //PWM0LOAD=periode/2 =0x1F4
-		ldr	r12, =PWM1LOAD
-		mov r10,	#0x1F4
-		str	r10,[r12]
+		ldr	r6, =PWM1LOAD
+		mov r0,	#0x1F4
+		str	r0,[r6]
 		
-		ldr	r12, =PWM1CMPA ;Valeur rapport cyclique : pour 10% => 1C2h si clock = 0F42400
-		mov	r10,	#VITESSE
-		str	r10, [r12]  ;*(int *)(0x40028000+0x058)=0x01C2;
+		ldr	r6, =PWM1CMPA ;Valeur rapport cyclique : pour 10% => 1C2h si clock = 0F42400
+		mov	r0,	#VITESSE
+		str	r0, [r6]  ;*(int *)(0x40028000+0x058)=0x01C2;
 		
-		ldr	r12, =PWM1CMPB ;PWM0CMPB recoit meme valeur. (CMPA depend du rapport cyclique)
-		mov	r10,	#0x1F4	; *(int *)(0x40028000+0x05C)=0x1F4; 
-		str	r10,	[r12]
+		ldr	r6, =PWM1CMPB ;PWM0CMPB recoit meme valeur. (CMPA depend du rapport cyclique)
+		mov	r0,	#0x1F4	; *(int *)(0x40028000+0x05C)=0x1F4; 
+		str	r0,	[r6]
 		
 	;Control PWM : active PWM Generator 0 (p1167): Enable+up/down + Enable counter debug mod
-		ldr	r12, =PWM1CTL 
-		ldr	r10, [r12]	;*(int *) (0x40028000+0x40)= *(int *)(0x40028000+0x40) | 0x07;
-		ORR	r10,	r10,	#0x07
-		str	r10,	[r12]		
+		ldr	r6, =PWM1CTL 
+		ldr	r0, [r6]	;*(int *) (0x40028000+0x40)= *(int *)(0x40028000+0x40) | 0x07;
+		ORR	r0,	r0,	#0x07
+		str	r0,	[r6]		
 		
 	;;-----Fin config des PWMs			
 		
 	;PORT D OUTPUT pin0 (pwm)=pin1(direction)=pin2(slow decay)=pin5(12v enable)
-		ldr	r12, =GPIODIR_D 
-		ldr	r10, [r12]
-		ORR	r10,	#(GPIO_0+GPIO_1+GPIO_2+GPIO_5)
-		str	r10,[r12]
+		ldr	r6, =GPIODIR_D 
+		ldr	r0, [r6]
+		ORR	r0,	#(GPIO_0+GPIO_1+GPIO_2+GPIO_5)
+		str	r0,[r6]
 	;Port D, 2mA les meme
-		ldr	r12, =GPIODR2R_D ; 
-		ldr	r10, [r12]
-		ORR	r10,	#(GPIO_0+GPIO_1+GPIO_2+GPIO_5)
-		str	r10,[r12]
+		ldr	r6, =GPIODR2R_D ; 
+		ldr	r0, [r6]
+		ORR	r0,	#(GPIO_0+GPIO_1+GPIO_2+GPIO_5)
+		str	r0,[r6]
 	;Port D, Digital Enable
-		ldr	r12, =GPIODEN_D ;
-		ldr	r10, [r12]
-		ORR	r10,	#(GPIO_0+GPIO_1+GPIO_2+GPIO_5)	
-		str	r10,[r12]	
+		ldr	r6, =GPIODEN_D ;
+		ldr	r0, [r6]
+		ORR	r0,	#(GPIO_0+GPIO_1+GPIO_2+GPIO_5)	
+		str	r0,[r6]	
 	;Port D : mise à 1 de slow Decay et 12V et mise à 0 pour dir et pwm
-		ldr	r12, =(GPIODATA_D+((GPIO_0+GPIO_1+GPIO_2+GPIO_5)<<2)) 
-		mov	r10, #(GPIO_2+GPIO_5) ; #0x24
-		str	r10,[r12]
+		ldr	r6, =(GPIODATA_D+((GPIO_0+GPIO_1+GPIO_2+GPIO_5)<<2)) 
+		mov	r0, #(GPIO_2+GPIO_5) ; #0x24
+		str	r0,[r6]
 		
 	;MOT2, PH1 pour sens moteur ouput
-		ldr	r12, =GPIODIR_H 
-		mov	r10,	#0x03	; 
-		str	r10,[r12]
+		ldr	r6, =GPIODIR_H 
+		mov	r0,	#0x03	; 
+		str	r0,[r6]
 	;Port H, 2mA les meme
-		ldr	r12, =GPIODR2R_H
-		mov r10, #0x03	
-		str	r10,[r12]
+		ldr	r6, =GPIODR2R_H
+		mov r0, #0x03	
+		str	r0,[r6]
 	;Port H, Digital Enable
-		ldr	r12, =GPIODEN_H
-		mov r10, #0x03	
-		str	r10,[r12]	
+		ldr	r6, =GPIODEN_H
+		mov r0, #0x03	
+		str	r0,[r6]	
 	;Port H : mise à 1 pour dir 
-		ldr	r12, =(GPIODATA_H +(GPIO_1<<2))
-		mov	r10, #0x02
-		str	r10,[r12]		
+		ldr	r6, =(GPIODATA_H +(GPIO_1<<2))
+		mov	r0, #0x02
+		str	r0,[r6]		
 		
 		BX	LR	; FIN du sous programme d'init.
 
@@ -255,75 +255,75 @@ MOTEUR_INIT
 ;qu'on controle, pas les blocks PWM0 et PWM1!!!
 MOTEUR_DROIT_ON
 		;Enable sortie PWM0 (bit 0), p1145 
-		ldr	r12,	=PWMENABLE
-		ldr r10, [r12]
-		orr r10,	#0x01 ;bit 0 à 1
-		str	r10,	[r12]
+		ldr	r6,	=PWMENABLE
+		ldr r0, [r6]
+		orr r0,	#0x01 ;bit 0 à 1
+		str	r0,	[r6]
 		BX	LR
 
 MOTEUR_DROIT_OFF 
-		ldr	r12,	=PWMENABLE
-		ldr r10,	[r12]
-		and	r10,	#0x0E	;bit 0 à 0
-		str	r10,	[r12]
+		ldr	r6,	=PWMENABLE
+		ldr r0,	[r6]
+		and	r0,	#0x0E	;bit 0 à 0
+		str	r0,	[r6]
 		BX	LR
 
 MOTEUR_GAUCHE_ON
-		ldr	r12,	=PWMENABLE
-		ldr	r10, [r12]
-		orr	r10,	#0x04	;bit 2 à 1
-		str	r10,	[r12]
+		ldr	r6,	=PWMENABLE
+		ldr	r0, [r6]
+		orr	r0,	#0x04	;bit 2 à 1
+		str	r0,	[r6]
 		BX	LR
 
 MOTEUR_GAUCHE_OFF
-		ldr	r12,	=PWMENABLE
-		ldr	r10,	[r12]
-		and	r10,	#0x0B	;bit 2 à 0
-		str	r10,	[r12]
+		ldr	r6,	=PWMENABLE
+		ldr	r0,	[r6]
+		and	r0,	#0x0B	;bit 2 à 0
+		str	r0,	[r6]
 		BX	LR
 
 MOTEUR_DROIT_ARRIERE
 		;Inverse Direction (GPIO_D1)
-		ldr	r12, =(GPIODATA_D+(GPIO_1<<2)) 
-		mov	r10, #0
-		str	r10,[r12]
+		ldr	r6, =(GPIODATA_D+(GPIO_1<<2)) 
+		mov	r0, #0
+		str	r0,[r6]
 		BX	LR
 
 MOTEUR_DROIT_AVANT
 		;Inverse Direction (GPIO_D1)
-		ldr	r12, =(GPIODATA_D+(GPIO_1<<2)) 
-		mov	r10, #2
-		str	r10,[r12]
+		ldr	r6, =(GPIODATA_D+(GPIO_1<<2)) 
+		mov	r0, #2
+		str	r0,[r6]
 		BX	LR
 
 MOTEUR_GAUCHE_ARRIERE
 		;Inverse Direction (GPIO_D1)
-		ldr	r12, =(GPIODATA_H+(GPIO_1<<2)) 
-		mov	r10, #2 ; contraire du moteur Droit
-		str	r10,[r12]
+		ldr	r6, =(GPIODATA_H+(GPIO_1<<2)) 
+		mov	r0, #2 ; contraire du moteur Droit
+		str	r0,[r6]
 		BX	LR		
 
 MOTEUR_GAUCHE_AVANT
 		;Inverse Direction (GPIO_D1)
-		ldr	r12, =(GPIODATA_H+(GPIO_1<<2)) 
-		mov	r10, #0
-		str	r10,[r12]
+		ldr	r6, =(GPIODATA_H+(GPIO_1<<2)) 
+		mov	r0, #0
+		str	r0,[r6]
 		BX	LR		
 
 MOTEUR_DROIT_INVERSE
 		;Inverse Direction (GPIO_D1)
-		ldr	r12, =(GPIODATA_D+(GPIO_1<<2)) 
-		ldr	r11, [r12]
-		EOR	r10, r11, #GPIO_1
-		str	r10,[r12]
+		ldr	r6, =(GPIODATA_D+(GPIO_1<<2)) 
+		ldr	r1, [r6]
+		EOR	r0, r1, #GPIO_1
+		str	r0,[r6]
 		BX	LR
 
 MOTEUR_GAUCHE_INVERSE
 		;Inverse Direction (GPIO_D1)
-		ldr	r12, =(GPIODATA_H+(GPIO_1<<2)) 
-		ldr	r11, [r12]
-		EOR	r10, r11, #GPIO_1
-		str	r10,[r12]
+		ldr	r6, =(GPIODATA_H+(GPIO_1<<2)) 
+		ldr	r1, [r6]
+		EOR	r0, r1, #GPIO_1
+		str	r0,[r6]
 		BX	LR
 
 		END

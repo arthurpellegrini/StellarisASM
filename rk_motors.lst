@@ -188,376 +188,375 @@ ARM Macro Assembler    Page 3
    80 00000000         
    81 00000000         
    82 00000000         MOTEUR_INIT
-   83 00000000 F8DF C22C       ldr              r12, = SYSCTL_RCGC0
-   84 00000004 F8DC A000       ldr              r10, [r12]
-   85 00000008 F44A 1A80       ORR              r10, r10, #0x00100000 ;;bit 20 
-                                                            = PWM recoit clock:
-                                                             ON (p271) 
+   83 00000000 4E5C            ldr              r6, = SYSCTL_RCGC0
+   84 00000002 6830            ldr              r0, [R6]
+   85 00000004 F440 1080       ORR              r0, r0, #0x00100000 ;;bit 20 = 
+                                                            PWM recoit clock: O
+                                                            N (p271) 
 
 
 
 ARM Macro Assembler    Page 4 
 
 
-   86 0000000C F8CC A000       str              r10, [r12]
-   87 00000010         
-   88 00000010         ;ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_1);PWM clock is pro
+   86 00000008 6030            str              r0, [r6]
+   87 0000000A         
+   88 0000000A         ;ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_1);PWM clock is pro
                        cessor clock /1
-   89 00000010         ;Je ne fais rien car par defaut = OK!!
-   90 00000010         ;*(int *) (0x400FE060)= *(int *)(0x400FE060)...;
-   91 00000010         
-   92 00000010         ;RCGC2 :  Enable port D GPIO(p291 ) car Moteur Droit sur
+   89 0000000A         ;Je ne fais rien car par defaut = OK!!
+   90 0000000A         ;*(int *) (0x400FE060)= *(int *)(0x400FE060)...;
+   91 0000000A         
+   92 0000000A         ;RCGC2 :  Enable port D GPIO(p291 ) car Moteur Droit sur
                         port D 
-   93 00000010 F8DF C220       ldr              r12, = SYSCTL_RCGC2
-   94 00000014 F8DC A000       ldr              r10, [r12]
-   95 00000018 F04A 0A08       ORR              r10, r10, #0x08 ;; Enable port 
-                                                            D GPIO 
-   96 0000001C F8CC A000       str              r10, [r12]
-   97 00000020         
-   98 00000020         ;MOT2 : RCGC2 :  Enable port H GPIO  (2eme moteurs)
-   99 00000020 F8DF C210       ldr              r12, = SYSCTL_RCGC2
-  100 00000024 F8DC A000       ldr              r10, [r12]
-  101 00000028 F04A 0A80       ORR              r10, r10, #0x80 ;; Enable port 
-                                                            H GPIO 
-  102 0000002C F8CC A000       str              r10, [r12]
-  103 00000030         
-  104 00000030 BF00            nop
-  105 00000032 BF00            nop
-  106 00000034 BF00            nop
-  107 00000036         
-  108 00000036         ;;Pin muxing pour PWM, port D, reg. GPIOPCTL(p444), 4bit
+   93 0000000A 4E5B            ldr              r6, = SYSCTL_RCGC2
+   94 0000000C 6830            ldr              r0, [R6]
+   95 0000000E F040 0008       ORR              r0, r0, #0x08 ;; Enable port D 
+                                                            GPIO 
+   96 00000012 6030            str              r0, [r6]
+   97 00000014         
+   98 00000014         ;MOT2 : RCGC2 :  Enable port H GPIO  (2eme moteurs)
+   99 00000014 4E58            ldr              r6, = SYSCTL_RCGC2
+  100 00000016 6830            ldr              r0, [R6]
+  101 00000018 F040 0080       ORR              r0, r0, #0x80 ;; Enable port H 
+                                                            GPIO 
+  102 0000001C 6030            str              r0, [r6]
+  103 0000001E         
+  104 0000001E BF00            nop
+  105 00000020 BF00            nop
+  106 00000022 BF00            nop
+  107 00000024         
+  108 00000024         ;;Pin muxing pour PWM, port D, reg. GPIOPCTL(p444), 4bit
                        s de PCM0=0001<=>PWM (voir p1261)
-  109 00000036         ;;il faut mettre 1 pour avoir PD0=PWM0 et PD1=PWM1
-  110 00000036 F8DF C200       ldr              r12, = GPIOPCTL_D
-  111 0000003A         ;ldr r10, [r12]   ;; *(int *)(0x40007000+0x0000052C)=1;
-  112 0000003A         ;ORR r10, r10, #0x01 ;; Port D, pin 1 = PWM 
-  113 0000003A F04F 0A01       mov              r10, #0x01
-  114 0000003E F8CC A000       str              r10, [r12]
-  115 00000042         
-  116 00000042         ;;MOT2 : Pin muxing pour PWM, port H, reg. GPIOPCTL(p444
+  109 00000024         ;;il faut mettre 1 pour avoir PD0=PWM0 et PD1=PWM1
+  110 00000024 4E55            ldr              r6, = GPIOPCTL_D
+  111 00000026         ;ldr r0, [R6]   ;; *(int *)(0x40007000+0x0000052C)=1;
+  112 00000026         ;ORR r0, r0, #0x01 ;; Port D, pin 1 = PWM 
+  113 00000026 F04F 0001       mov              r0, #0x01
+  114 0000002A 6030            str              r0, [r6]
+  115 0000002C         
+  116 0000002C         ;;MOT2 : Pin muxing pour PWM, port H, reg. GPIOPCTL(p444
                        ), 4bits de PCM0=0001<=>PWM (voir p1261)
-  117 00000042         ;;il faut mettre mux = 2 pour avoir PH0=PWM2 et PH1=PWM3
+  117 0000002C         ;;il faut mettre mux = 2 pour avoir PH0=PWM2 et PH1=PWM3
                        
-  118 00000042 F8DF C1F8       ldr              r12, = GPIOPCTL_H
-  119 00000046 F04F 0A02       mov              r10, #0x02
-  120 0000004A F8CC A000       str              r10, [r12]
-  121 0000004E         
-  122 0000004E         ;;Alternate Function Select (p 426), PD0 utilise alernat
+  118 0000002C 4E54            ldr              r6, = GPIOPCTL_H
+  119 0000002E F04F 0002       mov              r0, #0x02
+  120 00000032 6030            str              r0, [r6]
+  121 00000034         
+  122 00000034         ;;Alternate Function Select (p 426), PD0 utilise alernat
                        e fonction (PWM au dessus)
-  123 0000004E         ;;donc PD0 = 1
-  124 0000004E F8DF C1F0       ldr              r12, = GPIOAFSEL_D
-  125 00000052 F8DC A000       ldr              r10, [r12]  ;*(int *)(0x4000700
+  123 00000034         ;;donc PD0 = 1
+  124 00000034 4E53            ldr              r6, = GPIOAFSEL_D
+  125 00000036 6830            ldr              r0, [R6]    ;*(int *)(0x4000700
                                                             0+0x00000420)= *(in
                                                             t *)(0x40007000+0x0
                                                             0000420) | 0x000000
                                                             01;
-  126 00000056 F04A 0A01       ORR              r10, r10, #0x01 ;
-  127 0000005A F8CC A000       str              r10, [r12]
-  128 0000005E         
-  129 0000005E         ;;MOT2 : Alternate Function Select (p 426), PH0 utilise 
+  126 00000038 F040 0001       ORR              r0, r0, #0x01 ;
+  127 0000003C 6030            str              r0, [r6]
+  128 0000003E         
+  129 0000003E         ;;MOT2 : Alternate Function Select (p 426), PH0 utilise 
                        PWM donc Alternate funct
-  130 0000005E         ;;donc PH0 = 1
-  131 0000005E F8DF C1E4       ldr              r12, = GPIOAFSEL_H
+  130 0000003E         ;;donc PH0 = 1
+  131 0000003E 4E52            ldr              r6, = GPIOAFSEL_H
 
 
 
 ARM Macro Assembler    Page 5 
 
 
-  132 00000062 F8DC A000       ldr              r10, [r12]  ;*(int *)(0x4000700
+  132 00000040 6830            ldr              r0, [R6]    ;*(int *)(0x4000700
                                                             0+0x00000420)= *(in
                                                             t *)(0x40007000+0x0
                                                             0000420) | 0x000000
                                                             01;
-  133 00000066 F04A 0A01       ORR              r10, r10, #0x01 ;
-  134 0000006A F8CC A000       str              r10, [r12]
-  135 0000006E         
-  136 0000006E         ;;-----------PWM0 pour moteur 1 connecté à PD0
-  137 0000006E         ;;PWM0 produit PWM0 et PWM1 output
-  138 0000006E         ;;Config Modes PWM0 + mode GenA + mode GenB
-  139 0000006E F8DF C1D8       ldr              r12, = PWM0CTL
-  140 00000072 F04F 0A02       mov              r10, #2     ;Mode up-down-up-do
+  133 00000042 F040 0001       ORR              r0, r0, #0x01 ;
+  134 00000046 6030            str              r0, [r6]
+  135 00000048         
+  136 00000048         ;;-----------PWM0 pour moteur 1 connecté à PD0
+  137 00000048         ;;PWM0 produit PWM0 et PWM1 output
+  138 00000048         ;;Config Modes PWM0 + mode GenA + mode GenB
+  139 00000048 4E50            ldr              r6, = PWM0CTL
+  140 0000004A F04F 0002       mov              r0, #2      ;Mode up-down-up-do
                                                             wn, pas synchro
-  141 00000076 F8CC A000       str              r10, [r12]
-  142 0000007A         
-  143 0000007A F8DF C1D0       ldr              r12, =PWM0GENA ;en decomptage, 
-                                                            qd comparateurA = c
-                                                            ompteur => sortie p
-                                                            wmA=0
-  144 0000007E         ;en comptage croissant, qd comparateurA = compteur => so
+  141 0000004E 6030            str              r0, [r6]
+  142 00000050         
+  143 00000050 4E4F            ldr              r6, =PWM0GENA ;en decomptage, q
+                                                            d comparateurA = co
+                                                            mpteur => sortie pw
+                                                            mA=0
+  144 00000052         ;en comptage croissant, qd comparateurA = compteur => so
                        rtie pwmA=1
-  145 0000007E F04F 0AB0       mov              r10, #0x0B0 ;0B0=10110000 => AC
+  145 00000052 F04F 00B0       mov              r0, #0x0B0  ;0B0=10110000 => AC
                                                             TCMPBD=00 (B down:r
                                                             ien), ACTCMPBU=00(B
                                                              up rien)
-  146 00000082 F8CC A000       str              r10, [r12]  ;ACTCMPAD=10 (A dow
+  146 00000056 6030            str              r0, [r6]    ;ACTCMPAD=10 (A dow
                                                             n:pwmA low), ACTCMP
                                                             AU=11 (A up:pwmA hi
                                                             gh) , ACTLOAD=00,AC
                                                             TZERO=00  
-  147 00000086         
-  148 00000086 F8DF C1C8       ldr              r12, =PWM0GENB ;en comptage cro
-                                                            issant, qd comparat
-                                                            eurB = compteur => 
-                                                            sortie pwmA=1
-  149 0000008A F44F 6A30       mov              r10, #0x0B00 ;en decomptage, qd
-                                                             comparateurB = com
-                                                            pteur => sortie pwm
-                                                            B=0
-  150 0000008E F8CC A000       str              r10, [r12]
-  151 00000092         ;Config Compteur, comparateur A et comparateur B
-  152 00000092         ;;#define PWM_PERIOD (ROM_SysCtlClockGet() / 16000),
-  153 00000092         ;;en mesure : SysCtlClockGet=0F42400h, /16=0x3E8, 
-  154 00000092         ;;on divise par 2 car moteur 6v sur alim 12v
-  155 00000092 F8DF C1C0       ldr              r12, =PWM0LOAD ;PWM0LOAD=period
-                                                            e/2 =0x1F4
-  156 00000096 F44F 7AFA       mov              r10, #0x1F4
-  157 0000009A F8CC A000       str              r10,[r12]
-  158 0000009E         
-  159 0000009E F8DF C1B8       ldr              r12, =PWM0CMPA ;Valeur rapport 
-                                                            cyclique : pour 10%
-                                                             => 1C2h si clock =
-                                                             0F42400
-  160 000000A2 F44F 7AD1       mov              r10, #VITESSE
-  161 000000A6 F8CC A000       str              r10, [r12]
-  162 000000AA         
-  163 000000AA F8DF C1B0       ldr              r12, =PWM0CMPB ;PWM0CMPB recoit
-                                                             meme valeur. (rapp
+  147 00000058         
+  148 00000058 4E4E            ldr              r6, =PWM0GENB ;en comptage croi
+                                                            ssant, qd comparate
+                                                            urB = compteur => s
+                                                            ortie pwmA=1
+  149 0000005A F44F 6030       mov              r0, #0x0B00 ;en decomptage, qd 
+                                                            comparateurB = comp
+                                                            teur => sortie pwmB
+                                                            =0
+  150 0000005E 6030            str              r0, [r6]
+  151 00000060         ;Config Compteur, comparateur A et comparateur B
+  152 00000060         ;;#define PWM_PERIOD (ROM_SysCtlClockGet() / 16000),
+  153 00000060         ;;en mesure : SysCtlClockGet=0F42400h, /16=0x3E8, 
+  154 00000060         ;;on divise par 2 car moteur 6v sur alim 12v
+  155 00000060 4E4D            ldr              r6, =PWM0LOAD ;PWM0LOAD=periode
+                                                            /2 =0x1F4
+  156 00000062 F44F 70FA       mov              r0, #0x1F4
+  157 00000066 6030            str              r0,[r6]
+  158 00000068         
+  159 00000068 4E4C            ldr              r6, =PWM0CMPA ;Valeur rapport c
+                                                            yclique : pour 10% 
+                                                            => 1C2h si clock = 
+                                                            0F42400
+  160 0000006A F44F 70D1       mov              r0, #VITESSE
+  161 0000006E 6030            str              r0, [r6]
+  162 00000070         
+  163 00000070 4E4B            ldr              r6, =PWM0CMPB ;PWM0CMPB recoit 
+                                                            meme valeur. (rappo
 
 
 
 ARM Macro Assembler    Page 6 
 
 
-                                                            ort cyclique depend
-                                                             de CMPA)
-  164 000000AE F44F 7AFA       mov              r10, #0x1F4
-  165 000000B2 F8CC A000       str              r10, [r12]
-  166 000000B6         
-  167 000000B6         ;Control PWM : active PWM Generator 0 (p1167): Enable+up
+                                                            rt cyclique depend 
+                                                            de CMPA)
+  164 00000072 F44F 70FA       mov              r0, #0x1F4
+  165 00000076 6030            str              r0, [r6]
+  166 00000078         
+  167 00000078         ;Control PWM : active PWM Generator 0 (p1167): Enable+up
                        /down + Enable counter debug mod
-  168 000000B6 F8DF C190       ldr              r12, =PWM0CTL
-  169 000000BA F8DC A000       ldr              r10, [r12]
-  170 000000BE F04A 0A07       ORR              r10, r10, #0x07
-  171 000000C2 F8CC A000       str              r10, [r12]
-  172 000000C6         
-  173 000000C6         ;;-----------PWM2 pour moteur 2 connecté à PH0
-  174 000000C6         ;;PWM1block produit PWM2 et PWM3 output
-  175 000000C6         ;;Config Modes PWM2 + mode GenA + mode GenB
-  176 000000C6 F8DF C198       ldr              r12, = PWM1CTL
-  177 000000CA F04F 0A02       mov              r10, #2     ;Mode up-down-up-do
+  168 00000078 4E44            ldr              r6, =PWM0CTL
+  169 0000007A 6830            ldr              r0, [r6]
+  170 0000007C F040 0007       ORR              r0, r0, #0x07
+  171 00000080 6030            str              r0, [r6]
+  172 00000082         
+  173 00000082         ;;-----------PWM2 pour moteur 2 connecté à PH0
+  174 00000082         ;;PWM1block produit PWM2 et PWM3 output
+  175 00000082         ;;Config Modes PWM2 + mode GenA + mode GenB
+  176 00000082 4E48            ldr              r6, = PWM1CTL
+  177 00000084 F04F 0002       mov              r0, #2      ;Mode up-down-up-do
                                                             wn, pas synchro
-  178 000000CE F8CC A000       str              r10, [r12]  ;*(int *)(0x4002800
+  178 00000088 6030            str              r0, [r6]    ;*(int *)(0x4002800
                                                             0+0x040)=2;
-  179 000000D2         
-  180 000000D2 F8DF C190       ldr              r12, =PWM1GENA ;en decomptage, 
-                                                            qd comparateurA = c
-                                                            ompteur => sortie p
-                                                            wmA=0
-  181 000000D6         ;en comptage croissant, qd comparateurA = compteur => so
+  179 0000008A         
+  180 0000008A 4E47            ldr              r6, =PWM1GENA ;en decomptage, q
+                                                            d comparateurA = co
+                                                            mpteur => sortie pw
+                                                            mA=0
+  181 0000008C         ;en comptage croissant, qd comparateurA = compteur => so
                        rtie pwmA=1
-  182 000000D6 F04F 0AB0       mov              r10, #0x0B0 ;0B0=10110000 => AC
+  182 0000008C F04F 00B0       mov              r0, #0x0B0  ;0B0=10110000 => AC
                                                             TCMPBD=00 (B down:r
                                                             ien), ACTCMPBU=00(B
                                                              up rien)
-  183 000000DA F8CC A000       str              r10, [r12]  ;ACTCMPAD=10 (A dow
+  183 00000090 6030            str              r0, [r6]    ;ACTCMPAD=10 (A dow
                                                             n:pwmA low), ACTCMP
                                                             AU=11 (A up:pwmA hi
                                                             gh) , ACTLOAD=00,AC
                                                             TZERO=00  
-  184 000000DE         
-  185 000000DE         ;*(int *)(0x40028000+0x060)=0x0B0; //
-  186 000000DE F8DF C188       ldr              r12, =PWM1GENB ;*(int *)(0x4002
-                                                            8000+0x064)=0x0B00;
-                                                            
-  187 000000E2 F44F 6A30       mov              r10, #0x0B00 ;en decomptage, qd
-                                                             comparateurB = com
-                                                            pteur => sortie pwm
-                                                            B=0
-  188 000000E6 F8CC A000       str              r10, [r12]  ;en comptage croiss
+  184 00000092         
+  185 00000092         ;*(int *)(0x40028000+0x060)=0x0B0; //
+  186 00000092 4E46            ldr              r6, =PWM1GENB ;*(int *)(0x40028
+                                                            000+0x064)=0x0B00;
+  187 00000094 F44F 6030       mov              r0, #0x0B00 ;en decomptage, qd 
+                                                            comparateurB = comp
+                                                            teur => sortie pwmB
+                                                            =0
+  188 00000098 6030            str              r0, [r6]    ;en comptage croiss
                                                             ant, qd comparateur
                                                             B = compteur => sor
                                                             tie pwmA=1
-  189 000000EA         ;Config Compteur, comparateur A et comparateur B
-  190 000000EA         ;;#define PWM_PERIOD (ROM_SysCtlClockGet() / 16000),
-  191 000000EA         ;;en mesure : SysCtlClockGet=0F42400h, /16=0x3E8, 
-  192 000000EA         ;;on divise par 2 car moteur 6v sur alim 12v
-  193 000000EA         ;*(int *)(0x40028000+0x050)=0x1F4; //PWM0LOAD=periode/2 
+  189 0000009A         ;Config Compteur, comparateur A et comparateur B
+  190 0000009A         ;;#define PWM_PERIOD (ROM_SysCtlClockGet() / 16000),
+  191 0000009A         ;;en mesure : SysCtlClockGet=0F42400h, /16=0x3E8, 
+  192 0000009A         ;;on divise par 2 car moteur 6v sur alim 12v
+  193 0000009A         ;*(int *)(0x40028000+0x050)=0x1F4; //PWM0LOAD=periode/2 
                        =0x1F4
-  194 000000EA F8DF C180       ldr              r12, =PWM1LOAD
-  195 000000EE F44F 7AFA       mov              r10, #0x1F4
-  196 000000F2 F8CC A000       str              r10,[r12]
-  197 000000F6         
+  194 0000009A 4E45            ldr              r6, =PWM1LOAD
+  195 0000009C F44F 70FA       mov              r0, #0x1F4
+  196 000000A0 6030            str              r0,[r6]
+  197 000000A2         
+  198 000000A2 4E44            ldr              r6, =PWM1CMPA ;Valeur rapport c
 
 
 
 ARM Macro Assembler    Page 7 
 
 
-  198 000000F6 F8DF C178       ldr              r12, =PWM1CMPA ;Valeur rapport 
-                                                            cyclique : pour 10%
-                                                             => 1C2h si clock =
-                                                             0F42400
-  199 000000FA F44F 7AD1       mov              r10, #VITESSE
-  200 000000FE F8CC A000       str              r10, [r12]  ;*(int *)(0x4002800
+                                                            yclique : pour 10% 
+                                                            => 1C2h si clock = 
+                                                            0F42400
+  199 000000A4 F44F 70D1       mov              r0, #VITESSE
+  200 000000A8 6030            str              r0, [r6]    ;*(int *)(0x4002800
                                                             0+0x058)=0x01C2;
-  201 00000102         
-  202 00000102 F8DF C170       ldr              r12, =PWM1CMPB ;PWM0CMPB recoit
-                                                             meme valeur. (CMPA
-                                                             depend du rapport 
-                                                            cyclique)
-  203 00000106 F44F 7AFA       mov              r10, #0x1F4 ; *(int *)(0x400280
+  201 000000AA         
+  202 000000AA 4E43            ldr              r6, =PWM1CMPB ;PWM0CMPB recoit 
+                                                            meme valeur. (CMPA 
+                                                            depend du rapport c
+                                                            yclique)
+  203 000000AC F44F 70FA       mov              r0, #0x1F4  ; *(int *)(0x400280
                                                             00+0x05C)=0x1F4; 
-  204 0000010A F8CC A000       str              r10, [r12]
-  205 0000010E         
-  206 0000010E         ;Control PWM : active PWM Generator 0 (p1167): Enable+up
+  204 000000B0 6030            str              r0, [r6]
+  205 000000B2         
+  206 000000B2         ;Control PWM : active PWM Generator 0 (p1167): Enable+up
                        /down + Enable counter debug mod
-  207 0000010E F8DF C150       ldr              r12, =PWM1CTL
-  208 00000112 F8DC A000       ldr              r10, [r12]  ;*(int *) (0x400280
+  207 000000B2 4E3C            ldr              r6, =PWM1CTL
+  208 000000B4 6830            ldr              r0, [r6]    ;*(int *) (0x400280
                                                             00+0x40)= *(int *)(
                                                             0x40028000+0x40) | 
                                                             0x07;
-  209 00000116 F04A 0A07       ORR              r10, r10, #0x07
-  210 0000011A F8CC A000       str              r10, [r12]
-  211 0000011E         
-  212 0000011E         ;;-----Fin config des PWMs   
-  213 0000011E         
-  214 0000011E         ;PORT D OUTPUT pin0 (pwm)=pin1(direction)=pin2(slow deca
+  209 000000B6 F040 0007       ORR              r0, r0, #0x07
+  210 000000BA 6030            str              r0, [r6]
+  211 000000BC         
+  212 000000BC         ;;-----Fin config des PWMs   
+  213 000000BC         
+  214 000000BC         ;PORT D OUTPUT pin0 (pwm)=pin1(direction)=pin2(slow deca
                        y)=pin5(12v enable)
-  215 0000011E F8DF C158       ldr              r12, =GPIODIR_D
-  216 00000122 F8DC A000       ldr              r10, [r12]
-  217 00000126 F04A 0A27       ORR              r10, #(GPIO_0+GPIO_1+GPIO_2+GPI
-O_5)
-  218 0000012A F8CC A000       str              r10,[r12]
-  219 0000012E         ;Port D, 2mA les meme
-  220 0000012E F8DF C14C       ldr              r12, =GPIODR2R_D ; 
-  221 00000132 F8DC A000       ldr              r10, [r12]
-  222 00000136 F04A 0A27       ORR              r10, #(GPIO_0+GPIO_1+GPIO_2+GPI
-O_5)
-  223 0000013A F8CC A000       str              r10,[r12]
-  224 0000013E         ;Port D, Digital Enable
-  225 0000013E F8DF C140       ldr              r12, =GPIODEN_D ;
-  226 00000142 F8DC A000       ldr              r10, [r12]
-  227 00000146 F04A 0A27       ORR              r10, #(GPIO_0+GPIO_1+GPIO_2+GPI
-O_5)
-  228 0000014A F8CC A000       str              r10,[r12]
-  229 0000014E         ;Port D : mise à 1 de slow Decay et 12V et mise à 0 po
+  215 000000BC 4E3F            ldr              r6, =GPIODIR_D
+  216 000000BE 6830            ldr              r0, [r6]
+  217 000000C0 F040 0027       ORR              r0, #(GPIO_0+GPIO_1+GPIO_2+GPIO
+_5)
+  218 000000C4 6030            str              r0,[r6]
+  219 000000C6         ;Port D, 2mA les meme
+  220 000000C6 4E3E            ldr              r6, =GPIODR2R_D ; 
+  221 000000C8 6830            ldr              r0, [r6]
+  222 000000CA F040 0027       ORR              r0, #(GPIO_0+GPIO_1+GPIO_2+GPIO
+_5)
+  223 000000CE 6030            str              r0,[r6]
+  224 000000D0         ;Port D, Digital Enable
+  225 000000D0 4E3C            ldr              r6, =GPIODEN_D ;
+  226 000000D2 6830            ldr              r0, [r6]
+  227 000000D4 F040 0027       ORR              r0, #(GPIO_0+GPIO_1+GPIO_2+GPIO
+_5)
+  228 000000D8 6030            str              r0,[r6]
+  229 000000DA         ;Port D : mise à 1 de slow Decay et 12V et mise à 0 po
                        ur dir et pwm
-  230 0000014E F8DF C134       ldr              r12, =(GPIODATA_D+((GPIO_0+GPIO
-_1+GPIO_2+GPIO_5)<<2))
-  231 00000152 F04F 0A24       mov              r10, #(GPIO_2+GPIO_5) ; #0x24
-  232 00000156 F8CC A000       str              r10,[r12]
-  233 0000015A         
-  234 0000015A         ;MOT2, PH1 pour sens moteur ouput
-  235 0000015A F8DF C12C       ldr              r12, =GPIODIR_H
-  236 0000015E F04F 0A03       mov              r10, #0x03  ; 
-  237 00000162 F8CC A000       str              r10,[r12]
-  238 00000166         ;Port H, 2mA les meme
+  230 000000DA 4E3B            ldr              r6, =(GPIODATA_D+((GPIO_0+GPIO_
+1+GPIO_2+GPIO_5)<<2))
+  231 000000DC F04F 0024       mov              r0, #(GPIO_2+GPIO_5) ; #0x24
+  232 000000E0 6030            str              r0,[r6]
+  233 000000E2         
+  234 000000E2         ;MOT2, PH1 pour sens moteur ouput
+  235 000000E2 4E3A            ldr              r6, =GPIODIR_H
+  236 000000E4 F04F 0003       mov              r0, #0x03   ; 
+  237 000000E8 6030            str              r0,[r6]
+  238 000000EA         ;Port H, 2mA les meme
+  239 000000EA 4E39            ldr              r6, =GPIODR2R_H
 
 
 
 ARM Macro Assembler    Page 8 
 
 
-  239 00000166 F8DF C124       ldr              r12, =GPIODR2R_H
-  240 0000016A F04F 0A03       mov              r10, #0x03
-  241 0000016E F8CC A000       str              r10,[r12]
-  242 00000172         ;Port H, Digital Enable
-  243 00000172 F8DF C11C       ldr              r12, =GPIODEN_H
-  244 00000176 F04F 0A03       mov              r10, #0x03
-  245 0000017A F8CC A000       str              r10,[r12]
-  246 0000017E         ;Port H : mise à 1 pour dir 
-  247 0000017E F8DF C114       ldr              r12, =(GPIODATA_H +(GPIO_1<<2))
-  248 00000182 F04F 0A02       mov              r10, #0x02
-  249 00000186 F8CC A000       str              r10,[r12]
-  250 0000018A         
-  251 0000018A 4770            BX               LR          ; FIN du sous progr
+  240 000000EC F04F 0003       mov              r0, #0x03
+  241 000000F0 6030            str              r0,[r6]
+  242 000000F2         ;Port H, Digital Enable
+  243 000000F2 4E38            ldr              r6, =GPIODEN_H
+  244 000000F4 F04F 0003       mov              r0, #0x03
+  245 000000F8 6030            str              r0,[r6]
+  246 000000FA         ;Port H : mise à 1 pour dir 
+  247 000000FA 4E37            ldr              r6, =(GPIODATA_H +(GPIO_1<<2))
+  248 000000FC F04F 0002       mov              r0, #0x02
+  249 00000100 6030            str              r0,[r6]
+  250 00000102         
+  251 00000102 4770            BX               LR          ; FIN du sous progr
                                                             amme d'init.
-  252 0000018C         
-  253 0000018C         ;Enable PWM0 (bit 0) et PWM2 (bit 2) p1145 
-  254 0000018C         ;Attention ici c'est les sorties PWM0 et PWM2
-  255 0000018C         ;qu'on controle, pas les blocks PWM0 et PWM1!!!
-  256 0000018C         MOTEUR_DROIT_ON
-  257 0000018C         ;Enable sortie PWM0 (bit 0), p1145 
-  258 0000018C F8DF C108       ldr              r12, =PWMENABLE
-  259 00000190 F8DC A000       ldr              r10, [r12]
-  260 00000194 F04A 0A01       orr              r10, #0x01  ;bit 0 à 1
-  261 00000198 F8CC A000       str              r10, [r12]
-  262 0000019C 4770            BX               LR
-  263 0000019E         
-  264 0000019E         MOTEUR_DROIT_OFF
-  265 0000019E F8DF C0F8       ldr              r12, =PWMENABLE
-  266 000001A2 F8DC A000       ldr              r10, [r12]
-  267 000001A6 F00A 0A0E       and              r10, #0x0E  ;bit 0 à 0
-  268 000001AA F8CC A000       str              r10, [r12]
-  269 000001AE 4770            BX               LR
-  270 000001B0         
-  271 000001B0         MOTEUR_GAUCHE_ON
-  272 000001B0 F8DF C0E4       ldr              r12, =PWMENABLE
-  273 000001B4 F8DC A000       ldr              r10, [r12]
-  274 000001B8 F04A 0A04       orr              r10, #0x04  ;bit 2 à 1
-  275 000001BC F8CC A000       str              r10, [r12]
-  276 000001C0 4770            BX               LR
-  277 000001C2         
-  278 000001C2         MOTEUR_GAUCHE_OFF
-  279 000001C2 F8DF C0D4       ldr              r12, =PWMENABLE
-  280 000001C6 F8DC A000       ldr              r10, [r12]
-  281 000001CA F00A 0A0B       and              r10, #0x0B  ;bit 2 à 0
-  282 000001CE F8CC A000       str              r10, [r12]
-  283 000001D2 4770            BX               LR
-  284 000001D4         
-  285 000001D4         MOTEUR_DROIT_ARRIERE
-  286 000001D4         ;Inverse Direction (GPIO_D1)
-  287 000001D4 F8DF C0C4       ldr              r12, =(GPIODATA_D+(GPIO_1<<2))
-  288 000001D8 F04F 0A00       mov              r10, #0
-  289 000001DC F8CC A000       str              r10,[r12]
-  290 000001E0 4770            BX               LR
-  291 000001E2         
-  292 000001E2         MOTEUR_DROIT_AVANT
-  293 000001E2         ;Inverse Direction (GPIO_D1)
-  294 000001E2 F8DF C0B8       ldr              r12, =(GPIODATA_D+(GPIO_1<<2))
-  295 000001E6 F04F 0A02       mov              r10, #2
-  296 000001EA F8CC A000       str              r10,[r12]
+  252 00000104         
+  253 00000104         ;Enable PWM0 (bit 0) et PWM2 (bit 2) p1145 
+  254 00000104         ;Attention ici c'est les sorties PWM0 et PWM2
+  255 00000104         ;qu'on controle, pas les blocks PWM0 et PWM1!!!
+  256 00000104         MOTEUR_DROIT_ON
+  257 00000104         ;Enable sortie PWM0 (bit 0), p1145 
+  258 00000104 4E35            ldr              r6, =PWMENABLE
+  259 00000106 6830            ldr              r0, [r6]
+  260 00000108 F040 0001       orr              r0, #0x01   ;bit 0 à 1
+  261 0000010C 6030            str              r0, [r6]
+  262 0000010E 4770            BX               LR
+  263 00000110         
+  264 00000110         MOTEUR_DROIT_OFF
+  265 00000110 4E32            ldr              r6, =PWMENABLE
+  266 00000112 6830            ldr              r0, [r6]
+  267 00000114 F000 000E       and              r0, #0x0E   ;bit 0 à 0
+  268 00000118 6030            str              r0, [r6]
+  269 0000011A 4770            BX               LR
+  270 0000011C         
+  271 0000011C         MOTEUR_GAUCHE_ON
+  272 0000011C 4E2F            ldr              r6, =PWMENABLE
+  273 0000011E 6830            ldr              r0, [r6]
+  274 00000120 F040 0004       orr              r0, #0x04   ;bit 2 à 1
+  275 00000124 6030            str              r0, [r6]
+  276 00000126 4770            BX               LR
+  277 00000128         
+  278 00000128         MOTEUR_GAUCHE_OFF
+  279 00000128 4E2C            ldr              r6, =PWMENABLE
+  280 0000012A 6830            ldr              r0, [r6]
+  281 0000012C F000 000B       and              r0, #0x0B   ;bit 2 à 0
+  282 00000130 6030            str              r0, [r6]
+  283 00000132 4770            BX               LR
+  284 00000134         
+  285 00000134         MOTEUR_DROIT_ARRIERE
+  286 00000134         ;Inverse Direction (GPIO_D1)
+  287 00000134 4E2A            ldr              r6, =(GPIODATA_D+(GPIO_1<<2))
+  288 00000136 F04F 0000       mov              r0, #0
+  289 0000013A 6030            str              r0,[r6]
+  290 0000013C 4770            BX               LR
+  291 0000013E         
+  292 0000013E         MOTEUR_DROIT_AVANT
+  293 0000013E         ;Inverse Direction (GPIO_D1)
+  294 0000013E 4E28            ldr              r6, =(GPIODATA_D+(GPIO_1<<2))
+  295 00000140 F04F 0002       mov              r0, #2
+  296 00000144 6030            str              r0,[r6]
+  297 00000146 4770            BX               LR
 
 
 
 ARM Macro Assembler    Page 9 
 
 
-  297 000001EE 4770            BX               LR
-  298 000001F0         
-  299 000001F0         MOTEUR_GAUCHE_ARRIERE
-  300 000001F0         ;Inverse Direction (GPIO_D1)
-  301 000001F0 F8DF C0A0       ldr              r12, =(GPIODATA_H+(GPIO_1<<2))
-  302 000001F4 F04F 0A02       mov              r10, #2     ; contraire du mote
+  298 00000148         
+  299 00000148         MOTEUR_GAUCHE_ARRIERE
+  300 00000148         ;Inverse Direction (GPIO_D1)
+  301 00000148 4E23            ldr              r6, =(GPIODATA_H+(GPIO_1<<2))
+  302 0000014A F04F 0002       mov              r0, #2      ; contraire du mote
                                                             ur Droit
-  303 000001F8 F8CC A000       str              r10,[r12]
-  304 000001FC 4770            BX               LR
-  305 000001FE         
-  306 000001FE         MOTEUR_GAUCHE_AVANT
-  307 000001FE         ;Inverse Direction (GPIO_D1)
-  308 000001FE F8DF C094       ldr              r12, =(GPIODATA_H+(GPIO_1<<2))
-  309 00000202 F04F 0A00       mov              r10, #0
-  310 00000206 F8CC A000       str              r10,[r12]
-  311 0000020A 4770            BX               LR
-  312 0000020C         
-  313 0000020C         MOTEUR_DROIT_INVERSE
-  314 0000020C         ;Inverse Direction (GPIO_D1)
-  315 0000020C F8DF C08C       ldr              r12, =(GPIODATA_D+(GPIO_1<<2))
-  316 00000210 F8DC B000       ldr              r11, [r12]
-  317 00000214 F08B 0A02       EOR              r10, r11, #GPIO_1
-  318 00000218 F8CC A000       str              r10,[r12]
-  319 0000021C 4770            BX               LR
-  320 0000021E         
-  321 0000021E         MOTEUR_GAUCHE_INVERSE
-  322 0000021E         ;Inverse Direction (GPIO_D1)
-  323 0000021E F8DF C074       ldr              r12, =(GPIODATA_H+(GPIO_1<<2))
-  324 00000222 F8DC B000       ldr              r11, [r12]
-  325 00000226 F08B 0A02       EOR              r10, r11, #GPIO_1
-  326 0000022A F8CC A000       str              r10,[r12]
-  327 0000022E 4770            BX               LR
-  328 00000230         
-  329 00000230                 END
+  303 0000014E 6030            str              r0,[r6]
+  304 00000150 4770            BX               LR
+  305 00000152         
+  306 00000152         MOTEUR_GAUCHE_AVANT
+  307 00000152         ;Inverse Direction (GPIO_D1)
+  308 00000152 4E21            ldr              r6, =(GPIODATA_H+(GPIO_1<<2))
+  309 00000154 F04F 0000       mov              r0, #0
+  310 00000158 6030            str              r0,[r6]
+  311 0000015A 4770            BX               LR
+  312 0000015C         
+  313 0000015C         MOTEUR_DROIT_INVERSE
+  314 0000015C         ;Inverse Direction (GPIO_D1)
+  315 0000015C 4E20            ldr              r6, =(GPIODATA_D+(GPIO_1<<2))
+  316 0000015E 6831            ldr              r1, [r6]
+  317 00000160 F081 0002       EOR              r0, r1, #GPIO_1
+  318 00000164 6030            str              r0,[r6]
+  319 00000166 4770            BX               LR
+  320 00000168         
+  321 00000168         MOTEUR_GAUCHE_INVERSE
+  322 00000168         ;Inverse Direction (GPIO_D1)
+  323 00000168 4E1B            ldr              r6, =(GPIODATA_H+(GPIO_1<<2))
+  324 0000016A 6831            ldr              r1, [r6]
+  325 0000016C F081 0002       EOR              r0, r1, #GPIO_1
+  326 00000170 6030            str              r0,[r6]
+  327 00000172 4770            BX               LR
+  328 00000174         
+  329 00000174                 END
               400FE100 
               400FE108 
               4000752C 
@@ -583,13 +582,13 @@ ARM Macro Assembler    Page 9
               40027400 
               40027500 
               4002751C 
+              40027008 
 
 
 
 ARM Macro Assembler    Page 10 
 
 
-              40027008 
               40028008 
               40007008 
 Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=.\rk_mot
@@ -611,7 +610,7 @@ Symbol: .text
    Uses
       None
 Comment: .text unused
-MOTEUR_DROIT_ARRIERE 000001D4
+MOTEUR_DROIT_ARRIERE 00000134
 
 Symbol: MOTEUR_DROIT_ARRIERE
    Definitions
@@ -619,7 +618,7 @@ Symbol: MOTEUR_DROIT_ARRIERE
    Uses
       At line 73 in file rk_motors.s
 Comment: MOTEUR_DROIT_ARRIERE used once
-MOTEUR_DROIT_AVANT 000001E2
+MOTEUR_DROIT_AVANT 0000013E
 
 Symbol: MOTEUR_DROIT_AVANT
    Definitions
@@ -627,7 +626,7 @@ Symbol: MOTEUR_DROIT_AVANT
    Uses
       At line 72 in file rk_motors.s
 Comment: MOTEUR_DROIT_AVANT used once
-MOTEUR_DROIT_INVERSE 0000020C
+MOTEUR_DROIT_INVERSE 0000015C
 
 Symbol: MOTEUR_DROIT_INVERSE
    Definitions
@@ -635,7 +634,7 @@ Symbol: MOTEUR_DROIT_INVERSE
    Uses
       At line 74 in file rk_motors.s
 Comment: MOTEUR_DROIT_INVERSE used once
-MOTEUR_DROIT_OFF 0000019E
+MOTEUR_DROIT_OFF 00000110
 
 Symbol: MOTEUR_DROIT_OFF
    Definitions
@@ -643,7 +642,7 @@ Symbol: MOTEUR_DROIT_OFF
    Uses
       At line 71 in file rk_motors.s
 Comment: MOTEUR_DROIT_OFF used once
-MOTEUR_DROIT_ON 0000018C
+MOTEUR_DROIT_ON 00000104
 
 Symbol: MOTEUR_DROIT_ON
    Definitions
@@ -651,7 +650,7 @@ Symbol: MOTEUR_DROIT_ON
    Uses
       At line 70 in file rk_motors.s
 Comment: MOTEUR_DROIT_ON used once
-MOTEUR_GAUCHE_ARRIERE 000001F0
+MOTEUR_GAUCHE_ARRIERE 00000148
 
 Symbol: MOTEUR_GAUCHE_ARRIERE
    Definitions
@@ -659,7 +658,7 @@ Symbol: MOTEUR_GAUCHE_ARRIERE
    Uses
       At line 78 in file rk_motors.s
 Comment: MOTEUR_GAUCHE_ARRIERE used once
-MOTEUR_GAUCHE_AVANT 000001FE
+MOTEUR_GAUCHE_AVANT 00000152
 
 Symbol: MOTEUR_GAUCHE_AVANT
 
@@ -673,7 +672,7 @@ Relocatable symbols
    Uses
       At line 77 in file rk_motors.s
 Comment: MOTEUR_GAUCHE_AVANT used once
-MOTEUR_GAUCHE_INVERSE 0000021E
+MOTEUR_GAUCHE_INVERSE 00000168
 
 Symbol: MOTEUR_GAUCHE_INVERSE
    Definitions
@@ -681,7 +680,7 @@ Symbol: MOTEUR_GAUCHE_INVERSE
    Uses
       At line 79 in file rk_motors.s
 Comment: MOTEUR_GAUCHE_INVERSE used once
-MOTEUR_GAUCHE_OFF 000001C2
+MOTEUR_GAUCHE_OFF 00000128
 
 Symbol: MOTEUR_GAUCHE_OFF
    Definitions
@@ -689,7 +688,7 @@ Symbol: MOTEUR_GAUCHE_OFF
    Uses
       At line 76 in file rk_motors.s
 Comment: MOTEUR_GAUCHE_OFF used once
-MOTEUR_GAUCHE_ON 000001B0
+MOTEUR_GAUCHE_ON 0000011C
 
 Symbol: MOTEUR_GAUCHE_ON
    Definitions
