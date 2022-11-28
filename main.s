@@ -105,27 +105,27 @@ __main
 		;;----------------------END_CONF_MOTORS 
 
 MAIN_LOOP
-
-		; Evalbot avance droit devant
-		BL	MOTEUR_DROIT_AVANT	   
-		BL	MOTEUR_GAUCHE_AVANT
-		
-		;; Avancement pendant une période (deux WAIT)
-		;BL	WAIT	; BL (Branchement vers le lien WAIT); possibilité de retour à la suite avec (BX LR)
-		;BL	WAIT
-		
-		;; Rotation à droite de l'Evalbot pendant une demi-période (1 seul WAIT)
-		;BL	MOTEUR_DROIT_ARRIERE   ; MOTEUR_DROIT_INVERSE
-
 		B 	GET_ENTRIES
 END_GET_ENTRIES
 		
 		B	CHECK_SWITCHS
 END_CHECK_SWITCHS
-		
-		B	CHECK_BUMPERS
-END_CHECK_BUMPERS
-		
+		CMP R10, #0x80 ; Si classique mode
+		BEQ classic_mode
+		CMP R10, #0x40 ; Si labyrinthe mode
+		BEQ labyrinthe_mode
+classic_mode
+		B	CHECK_BUMPERS_CLASSIQUE
+END_CHECK_BUMPERS_CLASSIQUE
+		B end_choose_mode
+labyrinthe_mode
+		B	CHECK_BUMPERS_LABYRINTHE
+END_CHECK_BUMPERS_LABYRINTHE
+		B end_choose_mode
+
+end_choose_mode
+
+
 		B	BLINKING_LEDS
 END_BLINKING_LEDS
 
@@ -155,36 +155,103 @@ BLINKING_LEDS
 	B END_BLINKING_LEDS
 ;----------------------CHECK SWITCHS
 CHECK_SWITCHS
+	CMP R3, #0x80 ;=> SWITCH 1
+	BEQ	switch1
+    CMP R3, #0x40 ;=> SWITCH 2
+	BEQ	switch2
 	B END_CHECK_SWITCHS
-;----------------------CHECK BUMPERS
-CHECK_BUMPERS
+switch1				; Mode de fonctionnement Classique
+	MOV R10, #0x80
+	B END_CHECK_SWITCHS
+switch2				; Mode de fonctionnement Labyrinthe
+	MOV R10, #0x40
+	B END_CHECK_SWITCHS
+;----------------------CHECK_BUMPERS_CLASSIQUE
+CHECK_BUMPERS_CLASSIQUE
 		CMP R4, #0x01
-		BEQ	bumper_gauche
+		BEQ	c_bumper_gauche
 		
 		CMP R4, #0x02
-		BEQ	bumper_droit
+		BEQ	c_bumper_droit
 	
 		CMP R4, #0x03
-		BEQ	bumper_not_pressed
+		BEQ	c_bumper_not_pressed
 		
 		BL	WAIT
 		
 		CMP R4, #0x00
-		BEQ	all_bumpers
+		BEQ	c_all_bumpers
 		
-		B	END_CHECK_BUMPERS
-bumper_not_pressed
+		B	END_CHECK_BUMPERS_CLASSIQUE
+c_bumper_not_pressed
 		MOV R2, #0x00; on reset les leds
-		B 	END_CHECK_BUMPERS
-bumper_droit
+		B 	END_CHECK_BUMPERS_CLASSIQUE
+c_bumper_droit
 		MOV R2, #0x10
-		B	END_CHECK_BUMPERS
-bumper_gauche
+		B	END_CHECK_BUMPERS_CLASSIQUE
+c_bumper_gauche
 		MOV R2, #0x20
-		B	END_CHECK_BUMPERS 
-all_bumpers
+		B	END_CHECK_BUMPERS_CLASSIQUE 
+c_all_bumpers
 		MOV R2, #0x30
-		B	END_CHECK_BUMPERS
+		B	END_CHECK_BUMPERS_CLASSIQUE
+;----------------------CHECK_BUMPERS_LABYRINTHE
+CHECK_BUMPERS_LABYRINTHE
+		CMP R4, #0x01
+		BEQ	l_bumper_gauche
+		
+		CMP R4, #0x02
+		BEQ	l_bumper_droit
+	
+		CMP R4, #0x03
+		BEQ	l_bumper_not_pressed
+		
+		BL	WAIT
+		
+		CMP R4, #0x00
+		BEQ	l_all_bumpers
+		
+		B	END_CHECK_BUMPERS_LABYRINTHE
+l_bumper_not_pressed
+		MOV R2, #0x00; on reset les leds
+		B GO_FRONT
+END_GO_FRONT
+		B 	END_CHECK_BUMPERS_LABYRINTHE
+l_bumper_droit
+		MOV R2, #0x10
+		B GO_RIGHT
+END_GO_RIGHT
+		B	END_CHECK_BUMPERS_LABYRINTHE
+l_bumper_gauche
+		MOV R2, #0x20
+		B GO_LEFT
+END_GO_LEFT
+		B	END_CHECK_BUMPERS_LABYRINTHE
+l_all_bumpers
+		MOV R2, #0x30
+		B GO_BACK
+END_GO_BACK
+		B	END_CHECK_BUMPERS_LABYRINTHE
+;----------------------GO FRONT		
+GO_FRONT
+		BL	MOTEUR_DROIT_AVANT	   
+		BL	MOTEUR_GAUCHE_AVANT
+		B END_GO_FRONT
+;----------------------GO BACK
+GO_BACK
+		BL	MOTEUR_DROIT_ARRIERE	   
+		BL	MOTEUR_GAUCHE_ARRIERE
+		B END_GO_BACK
+;----------------------GO LEFT
+GO_LEFT
+		BL	MOTEUR_DROIT_AVANT	   
+		BL	MOTEUR_GAUCHE_ARRIERE
+		B END_GO_LEFT
+;----------------------GO RIGHT
+GO_RIGHT
+		BL	MOTEUR_DROIT_ARRIERE	   
+		BL	MOTEUR_GAUCHE_AVANT
+		B END_GO_RIGHT
 ;;-------------------------------------------------------------------------------------------------
 ;;---------------------------------------	END FUNCTIONS	---------------------------------------
 ;;-------------------------------------------------------------------------------------------------
