@@ -1,25 +1,52 @@
-R0 => Timer
+Stellaris_ASM
+==============================================================
 
-R1 => LED ETEINTE
+Description
+--------------------------------------------------------------
 
-R2 => LED ALLUMEE
+Ce projet a été réalisé dans le cadre du module architecture de notre formation d'ingénieur en Informatique et Application à l'ESIEE-IT. Stellaris_ASM est un programme en assembleur permettant le controle d'un robot à travers deux modes de déplacement accessible à partir de ses switch :
 
-R3 => SWITCHS
+* mode classique
+* mode sortie de layrinthe
 
-R4 => BUMPERS
+Voici les outils utilisés pour le développement de cette application :
 
-R5 => 
+* Assembleur
+* Keil uVision4
+* Github
 
-R6 => @ LEDS
+Registre utilisé
+--------------------------------------------------------------
 
-R7 => @ SWITCHS
+* R0 => TIMER
 
-R8 => @ BUMPERS
+* R1 => LED ETEINTE
 
-R9 => 
+* R2 => ÉTAT DE LA LED
 
-R10 => TEMP MOTEURS
+* R3 => SWITCHS
 
-R11 => MOTEURS  
+* R4 => BUMPERS
 
-R12 => @ MOTEURS
+* R5 => NON UTILISÉ
+
+* R6 => @ LEDS
+
+* R7 => @ SWITCHS
+
+* R8 => @ BUMPERS
+
+* R9 => NON UTILISÉ
+
+* R10 => TEMP MOTEURS
+
+* R11 => MOTEURS  
+
+* R12 => @ MOTEURS
+
+Mode de déplacement 1
+--------------------------------------------------------------
+
+
+Mode de déplacement 2
+--------------------------------------------------------------
