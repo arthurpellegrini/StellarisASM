@@ -11,38 +11,37 @@ Ce projet a été réalisé dans le cadre du module architecture de notre format
 
 Voici les outils utilisés pour le développement de cette application :
 
-* Assembleur
+* Assembleur ARM Cortex M3
 * Keil uVision4
-* Github
 
-Registre utilisé
+Registres utilisés
 --------------------------------------------------------------
 
-* R0 => TIMER
+* R0 => MOTEUR
 
-* R1 => LED ETEINTE
+* R1 => MOTEUR
 
-* R2 => ÉTAT DE LA LED
+* R2 => LED ETEINTE
 
-* R3 => SWITCHS
+* R3 => ETAT LED 
 
-* R4 => BUMPERS
+* R4 => SWITCHS
 
-* R5 => NON UTILISÉ
+* R5 => BUMPERS
 
-* R6 => @ LEDS
+* R6 => @ MOTEUR
 
-* R7 => @ SWITCHS
+* R7 => @ LEDS
 
-* R8 => @ BUMPERS
+* R8 => @ SWITCHS
 
-* R9 => NON UTILISÉ
+* R9 => @ BUMPERS
 
-* R10 => TEMP MOTEURS
+* R10 => WAIT
 
-* R11 => MOTEURS  
+* R11 =>  N/A
 
-* R12 => @ MOTEURS
+* R12 =>  N/A
 
 Mode de déplacement 1
 --------------------------------------------------------------
