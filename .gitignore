@@ -1,2 +1,6 @@
 *.html
 *.htm
+*.d
+*.o
+*.bak
+*.lst

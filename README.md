@@ -6,8 +6,8 @@ Description
 
 Ce projet a été réalisé dans le cadre du module architecture de notre formation d'ingénieur en Informatique et Application à l'ESIEE-IT. Stellaris_ASM est un programme en assembleur permettant le controle d'un robot à travers deux modes de déplacement sélectionnable à partir de ses switchs :
 
-* mode classique
-* mode sortie de labyrinthe
+* Classique
+* Résolution Labyrinthe
 
 Voici les outils utilisés pour le développement de cette application :
 
@@ -22,10 +22,10 @@ Mode de déplacement classique
 * Bumper droit pressé => allumer la LED gauche et tourner à gauche
 * Bumper gauche pressé => allumer la LED droite et tourner à droite
 
-Mode de déplacement sortie de labyrinthe
+Mode de déplacement résolution de labyrinthe
 --------------------------------------------------------------
 
-méthode d'échapatoire d'un labyrinthe issue de l'algorythme de Pledge :
+Méthode d'échapatoire d'un labyrinthe issue de l'algorythme de Pledge :
 
 * Si le compteur indique 0, on va tout droit jusqu'au mur en face.
 * A partir de ce mur, on tourne du côté que l'on préfère (mais toujours le même, disons gauche).
@@ -39,37 +39,37 @@ Registres utilisés
 
 * R1 => MOTEUR
 
-* R2 => LED ETEINTE
-
-* R3 => ETAT LED
+* R2 => ETAT LED
   * valeur possible :
     * 0X30 => LED left & LED right
     * 0X20 => LED left
     * 0X10 => LED right
     * 0X00 => LED OFF
 
-* R4 => SWITCHS
+* R3 => SWITCHS
   * valeur possible :
     * 0XC0 => SWITCH not pressed
     * 0X80 => SWITCH 1
     * 0X40 => SWITCH 2
 
-* R5 => BUMPERS
+* R4 => BUMPERS
   * valeur possible :
     * 0X00 => BUMPERS not pressed
     * 0X03 => BUMPERS pressed
     * 0X01 => BUMPER left
     * 0X02 => BUMPER right
 
+* R5 => @ LEDS
+
 * R6 => @ MOTEUR
 
-* R7 => @ LEDS
+* R7 => @ SWITCHS
+  
+* R8 => @ BUMPERS
 
-* R8 => @ SWITCHS
+* R9 => WAIT
 
-* R9 => @ BUMPERS
-
-* R10 => WAIT
+* R10 => MODE DE JEU
 
 * R11 =>  N/A
 

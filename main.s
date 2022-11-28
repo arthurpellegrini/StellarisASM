@@ -1,21 +1,15 @@
-	;; RK - Evalbot (Cortex M3 de Texas Instrument)
-; programme - Pilotage 2 Moteurs Evalbot par PWM tout en ASM (Evalbot tourne sur lui même)
-
-
+; RK - Evalbot (Cortex M3 de Texas Instrument)
+;------------------------------------------------
+; AUTHORS - Arthur PELLEGRINI & Clément BRISSARD
+;------------------------------------------------
 
 		AREA    |.text|, CODE, READONLY
-
-		
+			
 ; This register controls the clock gating logic in normal Run mode
 SYSCTL_PERIPH_GPIOF EQU		0x400FE108	; SYSCTL_RCGC2_R (p291 datasheet de lm3s9b92.pdf)
 
-; The GPIODATA register is the data register
-GPIO_PORTD_BASE		EQU		0x40007000	; GPIO Port D (APB) base: 0x4000.7000
-GPIO_PORTE_BASE		EQU		0x40024000	; GPIO Port E (APB) base: 0x4002.4000
-GPIO_PORTF_BASE		EQU		0x40025000	; GPIO Port F (APB) base: 0x4002.5000 (p416 datasheet de lm3s9B92.pdf)
-
-; configure the corresponding pin to be an output
-; all GPIO pins are inputs by default
+; Configure the corresponding pin to be an output
+; All GPIO pins are inputs by default
 GPIO_O_DIR   		EQU 	0x00000400  ; GPIO Direction (p417 datasheet de lm3s9B92.pdf)
 
 ; The GPIODR2R register is the 2-mA drive control register
@@ -29,98 +23,20 @@ GPIO_O_DEN   		EQU 	0x0000051C  ; GPIO Digital Enable (p437 datasheet de lm3s9B9
 ; The GPIOPUR register is the pull-up control register
 GPIO_O_PUR			EQU		0x00000510 
 
-; PINS port input
-PINSD_6_7				EQU		0xC0		; switch 1 & 2 sur broches 6 & 7 (1100 0000)
-PINSE_1_2				EQU		0x03		; bumpers 1 & 2 sur les broches (0000 0011)
+; The GPIODATA register is the data register
+GPIO_PORTD_BASE		EQU		0x40007000	; GPIO Port D (APB) base: 0x4000.7000
+GPIO_PORTE_BASE		EQU		0x40024000	; GPIO Port E (APB) base: 0x4002.4000
+GPIO_PORTF_BASE		EQU		0x40025000	; GPIO Port F (APB) base: 0x4002.5000 (p416 datasheet de lm3s9B92.pdf)
 
-; PINS port output
-PINSF_4_5				EQU		0x30		; led 1 & 2 sur broches 4 & 5 (0011 0000)
+; PINS Port Input
+PINSD_6_7			EQU		0xC0		; Switchs 1 & 2 on Pins 6 & 7	(1100 0000)
+PINSE_1_2			EQU		0x03		; Bumpers 1 & 2 on Pins 1 & 2 	(0000 0011)
+PINSF_4_5			EQU		0x30		; Leds 1 & 2 on Pins 4 & 5 		(0011 0000)
 	
-; Blinking frequency
-DUREE   			EQU     0x002FFFFF	; Random Value
-
-; Boucle d'attente
-WAIT	
-	ldr r10, =0x0FFFFF  
-wait		subs r10, #1
-			bne wait
-			BX	LR
-					
-
-;-----------------------CONFIGURATION LED
-CONFIGURATION_LED
-        ldr r10, = PINSF_4_5
-        ldr r7, = GPIO_PORTF_BASE+GPIO_O_DIR   
-        str r10, [r7]
-		    
-        ldr r7, = GPIO_PORTF_BASE+GPIO_O_DEN
-        str r10, [r7]
- 
-		ldr r7, = GPIO_PORTF_BASE+GPIO_O_DR2R		
-        str r10, [r7]
-		
-		; allumer les leds
-		mov r3, #PINSF_4_5    
-
-		;; Allume portF broches 4 et 5   					
-		ldr r7, = GPIO_PORTF_BASE + (PINSF_4_5<<2) 
-
-		;; pour eteindre LED 
-        mov r2, #0x000       					
-		BX LR
-
-;-----------------------CONFIGURATION SWITCH
-CONFIGURATION_SWITCH
-		ldr r10, = PINSD_6_7
-		
-		ldr r8, = GPIO_PORTD_BASE+GPIO_O_DEN
-		str r10, [r8]
- 
-		ldr r8, = GPIO_PORTD_BASE+GPIO_O_PUR	
-		str r10, [r8]
-		
-		ldr r8, = GPIO_PORTD_BASE + (PINSD_6_7<<2) 
-		BX LR
+; Blinking Frequency
+TIME   				EQU     0x002FFFFF	; Fixed Value
 	
-;----------------------CONFIGURATION BUMPER
-CONFIGURATION_BUMPER
-		ldr r10, = PINSE_1_2
-		
-		ldr r9, = GPIO_PORTE_BASE+GPIO_O_DEN
-		str r10, [r9]
- 
-		ldr r9, = GPIO_PORTE_BASE+GPIO_O_PUR	
-		str r10, [r9]
-		ldr r9, = GPIO_PORTE_BASE + (PINSE_1_2<<2) 
-		BX LR
 	
-;----------------------GET_ENTRIES
-GET_ENTRIES
-	ldr r4, [r8]							;; on récupère les entrées des switchs
-	ldr r5, [r9]							;; on récupère les entrées des bumpers
-	BX LR
-	
-;----------------------BLINKING LED
-BLINKING_LED
-	str r2, [r7]    						;; Eteint LED car r3 = 0x00  
-	
-	;wait
-	ldr r10, =0x0FFFFF  
-wait_bl_led1		
-	subs r10, #1
-	bne wait_bl_led1
-    ;fin wait
-	
-	str r3, [r7] 		;; Allume portF broche 4 & 5 : 00110000 (contenu de r3)
-	
-	;wait
-	ldr r10, =0x0FFFFF  
-wait_bl_led2		
-	subs r10, #1
-	bne wait_bl_led2
-    ;fin wait
-	BX LR
-
 		ENTRY
 		EXPORT	__main
 		
@@ -139,36 +55,57 @@ wait_bl_led2
 		IMPORT  MOTEUR_GAUCHE_ARRIERE		; moteur gauche tourne vers l'arrière
 		IMPORT  MOTEUR_GAUCHE_INVERSE		; inverse le sens de rotation du moteur gauche
 
-			
+
 __main	
-
-		; ;; Enable the Port F peripheral clock by setting bit 5 (0x20 == 0b100000)		(p291 datasheet de lm3s9B96.pdf)
-		; ;;														 (GPIO::FEDCBA)
-		ldr r7, = SYSCTL_PERIPH_GPIOF  			;; RCGC2
-        mov r10, #0x00000038  					;; Enable clock sur GPIO F E D (0011 1000)
-		; ;;														 									 (GPIO::FEDCBA)
-        str r10, [r7]
-	
-		; ;; "There must be a delay of 3 system clocks before any GPIO reg. access  (p413 datasheet de lm3s9B92.pdf)
-		nop	   									;; tres tres important....
+		;; Enable the Port F peripheral clock by setting bit 5 (0x20 == 0b100000) (p291 datasheet de lm3s9B96.pdf)
+		;; (GPIO::FEDCBA)
+		ldr R5, = SYSCTL_PERIPH_GPIOF  			;; RCGC2
+        mov R9, #0x00000038  					;; Enable clock sur GPIO F E D (0011 1000)
+		;; (GPIO::FEDCBA)
+        str R9, [R5]
+		;; "There must be a delay of 3 system clocks before any GPIO reg. access  (p413 datasheet de lm3s9B92.pdf)
+		nop	   									;; very important...
 		nop	   
-		nop	   									;; pas necessaire en simu ou en debbug step by step...
+		nop	   									;; not necessary in simulation or in debbug step by step...
 
-		BL	CONFIGURATION_LED
-		BL	CONFIGURATION_SWITCH
-		BL	CONFIGURATION_BUMPER
+		;;----------------------CONF_LEDS
+		ldr R9, = PINSF_4_5
+        ldr R5, = GPIO_PORTF_BASE+GPIO_O_DIR   
+        str R9, [R5]
+        ldr R5, = GPIO_PORTF_BASE+GPIO_O_DEN
+        str R9, [R5]
+		ldr R5, = GPIO_PORTF_BASE+GPIO_O_DR2R		
+        str R9, [R5] 
+		mov R2, #PINSF_4_5 ; LEDS values   
+		ldr R5, = GPIO_PORTF_BASE + (PINSF_4_5<<2) ; Turn on LEDS that correspond to portF broches 4 & 5 values   
+		;;----------------------END_CONF_LEDS
 
-		;; BL Branchement vers un lien (sous programme)
+		;;----------------------CONF_SWITCHS
+		ldr R9, = PINSD_6_7
+		ldr R7, = GPIO_PORTD_BASE+GPIO_O_DEN
+		str R9, [R7]
+		ldr R7, = GPIO_PORTD_BASE+GPIO_O_PUR	
+		str R9, [R7]
+		ldr R7, = GPIO_PORTD_BASE + (PINSD_6_7<<2) 
+		;;----------------------END_CONF_SWITCHS
 
-		; Configure les PWM + GPIO
-		BL	MOTEUR_INIT	   		   
-		
-		; Activer les deux moteurs droit et gauche
-		BL	MOTEUR_DROIT_ON
-		BL	MOTEUR_GAUCHE_ON
+		;;----------------------CONF_BUMPERS
+		ldr R9, = PINSE_1_2
+		ldr R8, = GPIO_PORTE_BASE+GPIO_O_DEN
+		str R9, [R8]
+		ldr R8, = GPIO_PORTE_BASE+GPIO_O_PUR	
+		str R9, [R8]
+		ldr R8, = GPIO_PORTE_BASE + (PINSE_1_2<<2) 
+		;;----------------------END_CONF_BUMPERS
 
-		; Boucle de pilotage des 2 Moteurs (Evalbot tourne sur lui même)
-loop	
+		;;----------------------CONF_MOTORS
+		BL	MOTEUR_INIT ; Setup PWM + GPIO
+		BL	MOTEUR_DROIT_ON ; Turn on right motor
+		BL	MOTEUR_GAUCHE_ON ; Turn on left motor
+		;;----------------------END_CONF_MOTORS 
+
+MAIN_LOOP
+
 		; Evalbot avance droit devant
 		BL	MOTEUR_DROIT_AVANT	   
 		BL	MOTEUR_GAUCHE_AVANT
@@ -180,48 +117,82 @@ loop
 		;; Rotation à droite de l'Evalbot pendant une demi-période (1 seul WAIT)
 		;BL	MOTEUR_DROIT_ARRIERE   ; MOTEUR_DROIT_INVERSE
 
-		BL 	GET_ENTRIES
+		B 	GET_ENTRIES
+END_GET_ENTRIES
 		
-		CMP R5, #0x01	;si bumper gauche
+		B	CHECK_SWITCHS
+END_CHECK_SWITCHS
+		
+		B	CHECK_BUMPERS
+END_CHECK_BUMPERS
+		
+		B	BLINKING_LEDS
+END_BLINKING_LEDS
+
+		b	MAIN_LOOP
+		
+;;-------------------------------------------------------------------------------------------------
+;;---------------------------------------	  FUNCTIONS		---------------------------------------
+;;-------------------------------------------------------------------------------------------------	
+; Waiting Loop
+WAIT	
+		LDR R9, =TIME  
+wait1	SUBS R9, #0x01
+		BNE wait1
+		BX	LR	
+;----------------------Get Environnement Entries (Update Switchs & Bumpers Values)
+GET_ENTRIES
+	ldr R3, [R7]							;; Get Switchs Entries Values
+	ldr R4, [R8]							;; Get Bumper Entries Values
+	B END_GET_ENTRIES
+;----------------------BLINKING LED
+BLINKING_LEDS
+	MOV R9, #0x00
+	str R9, [R5]    	;; Turn off LEDS with 0x00  
+	BL	WAIT
+	str R2, [R5] 		;; Turn on LEDS that correspond to portF broche 4 & 5 values : 00110000 => R2
+	BL WAIT
+	B END_BLINKING_LEDS
+;----------------------CHECK SWITCHS
+CHECK_SWITCHS
+	B END_CHECK_SWITCHS
+;----------------------CHECK BUMPERS
+CHECK_BUMPERS
+		CMP R4, #0x01
 		BEQ	bumper_gauche
 		
-		CMP R5, #0x02
+		CMP R4, #0x02
 		BEQ	bumper_droit
 	
-		CMP R5, #0x03
+		CMP R4, #0x03
 		BEQ	bumper_not_pressed
 		
 		BL	WAIT
-		CMP R5, #0x00
+		
+		CMP R4, #0x00
 		BEQ	all_bumpers
 		
-		B	fin_bumper
-all_bumpers
-		MOV R3, #0x30
-		B	fin_bumper
+		B	END_CHECK_BUMPERS
 bumper_not_pressed
-		MOV R3, #0x00; on reset les leds
-		B fin_bumper
-bumper_gauche
-		MOV R3, #0x20
-		B	fin_bumper 
+		MOV R2, #0x00; on reset les leds
+		B 	END_CHECK_BUMPERS
 bumper_droit
-		MOV R3, #0x10
-		B	fin_bumper
-fin_bumper
-
-
-		
-
-		
-		
-		BL	BLINKING_LED
-		
-
-		b	loop
-		
+		MOV R2, #0x10
+		B	END_CHECK_BUMPERS
+bumper_gauche
+		MOV R2, #0x20
+		B	END_CHECK_BUMPERS 
+all_bumpers
+		MOV R2, #0x30
+		B	END_CHECK_BUMPERS
+;;-------------------------------------------------------------------------------------------------
+;;---------------------------------------	END FUNCTIONS	---------------------------------------
+;;-------------------------------------------------------------------------------------------------
 		;; retour à la suite du lien de branchement
 		BX	LR
 
 		NOP
         END
+			
+			
+	
