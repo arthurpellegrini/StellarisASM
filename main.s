@@ -40,7 +40,7 @@ PINSF_4_5				EQU		0x30		; led 1 & 2 sur broches 4 & 5 (0011 0000)
 DUREE   			EQU     0x002FFFFF	; Random Value
 
 ; Boucle d'attente
-WAIT_S	
+WAIT	
 	ldr r10, =0x0FFFFF  
 wait		subs r10, #1
 			bne wait
@@ -93,7 +93,33 @@ CONFIGURATION_BUMPER
 		str r10, [r9]
 		ldr r9, = GPIO_PORTE_BASE + (PINSE_1_2<<2) 
 		BX LR
-
+	
+;----------------------GET_ENTRIES
+GET_ENTRIES
+	ldr r4, [r8]							;; on récupère les entrées des switchs
+	ldr r5, [r9]							;; on récupère les entrées des bumpers
+	BX LR
+	
+;----------------------BLINKING LED
+BLINKING_LED
+	str r2, [r7]    						;; Eteint LED car r3 = 0x00  
+	
+	;wait
+	ldr r10, =0x0FFFFF  
+wait_bl_led1		
+	subs r10, #1
+	bne wait_bl_led1
+    ;fin wait
+	
+	str r3, [r7] 		;; Allume portF broche 4 & 5 : 00110000 (contenu de r3)
+	
+	;wait
+	ldr r10, =0x0FFFFF  
+wait_bl_led2		
+	subs r10, #1
+	bne wait_bl_led2
+    ;fin wait
+	BX LR
 
 		ENTRY
 		EXPORT	__main
@@ -147,22 +173,49 @@ loop
 		BL	MOTEUR_DROIT_AVANT	   
 		BL	MOTEUR_GAUCHE_AVANT
 		
-		; Avancement pendant une période (deux WAIT)
-		BL	WAIT_S	; BL (Branchement vers le lien WAIT); possibilité de retour à la suite avec (BX LR)
-		BL	WAIT_S
+		;; Avancement pendant une période (deux WAIT)
+		;BL	WAIT	; BL (Branchement vers le lien WAIT); possibilité de retour à la suite avec (BX LR)
+		;BL	WAIT
 		
-		; Rotation à droite de l'Evalbot pendant une demi-période (1 seul WAIT)
-		BL	MOTEUR_DROIT_ARRIERE   ; MOTEUR_DROIT_INVERSE
+		;; Rotation à droite de l'Evalbot pendant une demi-période (1 seul WAIT)
+		;BL	MOTEUR_DROIT_ARRIERE   ; MOTEUR_DROIT_INVERSE
+
+		BL 	GET_ENTRIES
 		
-		;; GET_ENTRIES
-		ldr r4, [r8]							;; on récupère les entrées des switchs
-		ldr r5, [r9]							;; on récupère les entrées des bumpers
+		CMP R5, #0x01	;si bumper gauche
+		BEQ	bumper_gauche
 		
-		;; BLINKING_LED
-		str r2, [r7]    						;; Eteint LED car r3 = 0x00  
-		BL 	WAIT_S	
-        str r3, [r7] 		;; Allume portF broche 4 & 5 : 00110000 (contenu de r3)
-		BL	WAIT_S
+		CMP R5, #0x02
+		BEQ	bumper_droit
+	
+		CMP R5, #0x03
+		BEQ	bumper_not_pressed
+		
+		BL	WAIT
+		CMP R5, #0x00
+		BEQ	all_bumpers
+		
+		B	fin_bumper
+all_bumpers
+		MOV R3, #0x30
+		B	fin_bumper
+bumper_not_pressed
+		MOV R3, #0x00; on reset les leds
+		B fin_bumper
+bumper_gauche
+		MOV R3, #0x20
+		B	fin_bumper 
+bumper_droit
+		MOV R3, #0x10
+		B	fin_bumper
+fin_bumper
+
+
+		
+
+		
+		
+		BL	BLINKING_LED
 		
 
 		b	loop
