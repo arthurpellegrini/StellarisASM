@@ -25,7 +25,7 @@ Mode de déplacement classique
 Mode de déplacement résolution de labyrinthe
 --------------------------------------------------------------
 
-Méthode d'échapatoire d'un labyrinthe issue de l'algorythme de Pledge :
+Méthode d'échapatoire d'un labyrinthe issue de l'algorithme de Pledge :
 
 * Si le compteur indique 0, on va tout droit jusqu'au mur en face.
 * A partir de ce mur, on tourne du côté que l'on préfère (mais toujours le même, disons gauche).
@@ -39,20 +39,20 @@ Registres utilisés
 
 * R1 => MOTEUR
 
-* R3 => ETAT LED
+* R2 => ETAT LED
   * valeur possible :
     * 0X00 => LED OFF
     * 0X10 => LED right
     * 0X20 => LED left
     * 0X30 => LED left & LED right
 
-* R4 => SWITCHS
+* R3 => ETATS SWITCHS
   * valeur possible :
     * 0X40 => SWITCH 2
     * 0X80 => SWITCH 1
     * 0XC0 => SWITCH not pressed
 
-* R5 => BUMPERS
+* R4 => ETATS BUMPERS
   * valeur possible :
     * 0X00 => BUMPERS pressed
     * 0X01 => BUMPER left
