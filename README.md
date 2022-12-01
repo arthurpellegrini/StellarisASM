@@ -39,25 +39,25 @@ Registres utilisés
 
 * R1 => MOTEUR
 
-* R2 => ETAT LED
-  * valeurs possibles :
-    * 0X30 => LED left & LED right
-    * 0X20 => LED left
-    * 0X10 => LED right
+* R3 => ETAT LED
+  * valeur possible :
     * 0X00 => LED OFF
+    * 0X10 => LED right
+    * 0X20 => LED left
+    * 0X30 => LED left & LED right
 
-* R3 => SWITCHS
-  * valeurs possibles :
-    * 0XC0 => SWITCH not pressed
-    * 0X80 => SWITCH 1
+* R4 => SWITCHS
+  * valeur possible :
     * 0X40 => SWITCH 2
+    * 0X80 => SWITCH 1
+    * 0XC0 => SWITCH not pressed
 
-* R4 => BUMPERS
-  * valeurs possibles :
-    * 0X00 => BUMPERS not pressed
+* R5 => BUMPERS
+  * valeur possible :
+    * 0X00 => BUMPERS pressed
     * 0X01 => BUMPER left
     * 0X02 => BUMPER right
-    * 0X03 => BUMPERS pressed
+    * 0X03 => BUMPERS not pressed
 
 * R5 => @ LEDS
 
