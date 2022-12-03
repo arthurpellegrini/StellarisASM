@@ -92,294 +92,373 @@ ARM Macro Assembler    Page 2
                                                             ns 4 & 5   (0011 00
                                                             00)
    35 00000000         
-   36 00000000         ; Blinking Frequency
+   36 00000000         ; CONSTANTS
    37 00000000 000FFFFF 
-                       TIME    EQU              0x000FFFFF  ;; Fixed Value
-   38 00000000         
-   39 00000000                 ENTRY
-   40 00000000                 EXPORT           __main
-   41 00000000         
-   42 00000000         ;; The IMPORT command specifies that a symbol is defined
+                       TIME    EQU              0x00FFFFF
+   38 00000000 0000000C 
+                       NB_ROTATIONS
+                               EQU              0x0C
+   39 00000000 00000016 
+                       DISTANCE
+                               EQU              0x16
+   40 00000000         
+   41 00000000                 ENTRY
+   42 00000000                 EXPORT           __main
+   43 00000000         
+   44 00000000         ;; The IMPORT command specifies that a symbol is defined
                         in a shared object at runtime.
-   43 00000000                 IMPORT           MOTEUR_INIT ;; initialise les m
+   45 00000000                 IMPORT           MOTEUR_INIT ;; initialise les m
                                                             oteurs (configure l
                                                             es pwms + GPIO)
-   44 00000000         
-   45 00000000                 IMPORT           MOTEUR_DROIT_ON ;; activer le m
+   46 00000000         
+   47 00000000                 IMPORT           MOTEUR_DROIT_ON ;; activer le m
                                                             oteur droit
-   46 00000000                 IMPORT           MOTEUR_DROIT_OFF ;; déactiver 
+   48 00000000                 IMPORT           MOTEUR_DROIT_OFF ;; déactiver 
                                                             le moteur droit
-   47 00000000                 IMPORT           MOTEUR_DROIT_AVANT ;; moteur dr
+   49 00000000                 IMPORT           MOTEUR_DROIT_AVANT ;; moteur dr
                                                             oit tourne vers l'a
                                                             vant
-   48 00000000                 IMPORT           MOTEUR_DROIT_ARRIERE ;; moteur 
+   50 00000000                 IMPORT           MOTEUR_DROIT_ARRIERE ;; moteur 
                                                             droit tourne vers l
                                                             'arrière
-   49 00000000                 IMPORT           MOTEUR_DROIT_INVERSE ;; inverse
+   51 00000000                 IMPORT           MOTEUR_DROIT_INVERSE ;; inverse
                                                              le sens de rotatio
                                                             n du moteur droit
-   50 00000000         
-   51 00000000                 IMPORT           MOTEUR_GAUCHE_ON ;; activer le 
+   52 00000000         
+   53 00000000                 IMPORT           MOTEUR_GAUCHE_ON ;; activer le 
                                                             moteur gauche
-   52 00000000                 IMPORT           MOTEUR_GAUCHE_OFF ;; déactiver
-                                                             le moteur gauche
-   53 00000000                 IMPORT           MOTEUR_GAUCHE_AVANT ;; moteur g
-                                                            auche tourne vers l
-                                                            'avant
-   54 00000000                 IMPORT           MOTEUR_GAUCHE_ARRIERE ;; moteur
-                                                             gauche tourne vers
+   54 00000000                 IMPORT           MOTEUR_GAUCHE_OFF ;; déactiver
 
 
 
 ARM Macro Assembler    Page 3 
 
 
+                                                             le moteur gauche
+   55 00000000                 IMPORT           MOTEUR_GAUCHE_AVANT ;; moteur g
+                                                            auche tourne vers l
+                                                            'avant
+   56 00000000                 IMPORT           MOTEUR_GAUCHE_ARRIERE ;; moteur
+                                                             gauche tourne vers
                                                              l'arrière
-   55 00000000                 IMPORT           MOTEUR_GAUCHE_INVERSE ;; invers
+   57 00000000                 IMPORT           MOTEUR_GAUCHE_INVERSE ;; invers
                                                             e le sens de rotati
                                                             on du moteur gauche
                                                              
-   56 00000000         
-   57 00000000         __main
-   58 00000000         ;; Enable the Port F peripheral clock by setting bit 5 (
+   58 00000000         
+   59 00000000         __main
+   60 00000000         ;; Enable the Port F peripheral clock by setting bit 5 (
                        0x20 == 0b100000) (p291 datasheet de lm3s9B96.pdf)
-   59 00000000         ;; (GPIO::FEDCBA)
-   60 00000000 4D3B            ldr              R5, = SYSCTL_PERIPH_GPIOF 
+   61 00000000         ;; (GPIO::FEDCBA)
+   62 00000000 4D64            LDR              R5, = SYSCTL_PERIPH_GPIOF 
                                                             ;; RCGC2
-   61 00000002 F04F 0938       mov              R9, #0x00000038 ;; Enable clock
+   63 00000002 F04F 0938       MOV              R9, #0x00000038 ;; Enable clock
                                                              sur GPIO F E D (00
                                                             11 1000)
-   62 00000006         ;; (GPIO::FEDCBA)
-   63 00000006 F8C5 9000       str              R9, [R5]
-   64 0000000A         ;; "There must be a delay of 3 system clocks before any 
+   64 00000006         ;; (GPIO::FEDCBA)
+   65 00000006 F8C5 9000       STR              R9, [R5]
+   66 0000000A         ;; "There must be a delay of 3 system clocks before any 
                        GPIO reg. access  (p413 datasheet de lm3s9B92.pdf)
-   65 0000000A BF00            nop                          ;; very important..
+   67 0000000A BF00            NOP                          ;; very important..
                                                             .
-   66 0000000C BF00            nop
-   67 0000000E BF00            nop                          ;; not necessary in
+   68 0000000C BF00            NOP
+   69 0000000E BF00            NOP                          ;; not necessary in
                                                              simulation or in d
                                                             ebbug step by step.
                                                             ..
-   68 00000010         
-   69 00000010         ;;----------------------CONF_LEDS
-   70 00000010 F04F 0930       ldr              R9, = PINSF_4_5
-   71 00000014 4D37            ldr              R5, = GPIO_PORTF_BASE+GPIO_O_DI
+   70 00000010         
+   71 00000010         ;;----------------------CONF_LEDS
+   72 00000010 F04F 0930       LDR              R9, = PINSF_4_5
+   73 00000014 4D60            LDR              R5, = GPIO_PORTF_BASE+GPIO_O_DI
 R
-   72 00000016 F8C5 9000       str              R9, [R5]
-   73 0000001A 4D37            ldr              R5, = GPIO_PORTF_BASE+GPIO_O_DE
+   74 00000016 F8C5 9000       STR              R9, [R5]
+   75 0000001A 4D60            LDR              R5, = GPIO_PORTF_BASE+GPIO_O_DE
 N
-   74 0000001C F8C5 9000       str              R9, [R5]
-   75 00000020 4D36            ldr              R5, = GPIO_PORTF_BASE+GPIO_O_DR
+   76 0000001C F8C5 9000       STR              R9, [R5]
+   77 00000020 4D5F            LDR              R5, = GPIO_PORTF_BASE+GPIO_O_DR
 2R
-   76 00000022 F8C5 9000       str              R9, [R5]
-   77 00000026 F04F 0230       mov              R2, #PINSF_4_5 
+   78 00000022 F8C5 9000       STR              R9, [R5]
+   79 00000026 F04F 0230       MOV              R2, #PINSF_4_5 
                                                             ;; LEDS values   
-   78 0000002A 4D35            ldr              R5, = GPIO_PORTF_BASE + (PINSF_
+   80 0000002A 4D5E            LDR              R5, = GPIO_PORTF_BASE + (PINSF_
 4_5<<2) 
                                                             ;; Turn on LEDS tha
                                                             t correspond to por
                                                             tF broches 4 & 5 va
                                                             lues 
-   79 0000002C         
-   80 0000002C         
-   81 0000002C         ;;----------------------CONF_SWITCHS
-   82 0000002C F04F 09C0       ldr              R9, = PINSD_6_7
-   83 00000030 4F34            ldr              R7, = GPIO_PORTD_BASE+GPIO_O_DE
+   81 0000002C         ;;----------------------END CONF_LEDS
+   82 0000002C         
+   83 0000002C         ;;----------------------CONF_SWITCHS
+   84 0000002C F04F 09C0       LDR              R9, = PINSD_6_7
+   85 00000030 4F5D            LDR              R7, = GPIO_PORTD_BASE+GPIO_O_DE
 N
-   84 00000032 F8C7 9000       str              R9, [R7]
-   85 00000036 4F34            ldr              R7, = GPIO_PORTD_BASE+GPIO_O_PU
-R
-   86 00000038 F8C7 9000       str              R9, [R7]
-   87 0000003C 4F33            ldr              R7, = GPIO_PORTD_BASE + (PINSD_
-6_7<<2)
-   88 0000003E         
+   86 00000032 F8C7 9000       STR              R9, [R7]
 
 
 
 ARM Macro Assembler    Page 4 
 
 
-   89 0000003E         
-   90 0000003E         ;;----------------------CONF_BUMPERS
-   91 0000003E F04F 0903       ldr              R9, = PINSE_1_2
-   92 00000042 F8DF 80CC       ldr              R8, = GPIO_PORTE_BASE+GPIO_O_DE
-N
-   93 00000046 F8C8 9000       str              R9, [R8]
-   94 0000004A F8DF 80C8       ldr              R8, = GPIO_PORTE_BASE+GPIO_O_PU
+   87 00000036 4F5D            LDR              R7, = GPIO_PORTD_BASE+GPIO_O_PU
 R
-   95 0000004E F8C8 9000       str              R9, [R8]
-   96 00000052 F8DF 80C4       ldr              R8, = GPIO_PORTE_BASE + (PINSE_
+   88 00000038 F8C7 9000       STR              R9, [R7]
+   89 0000003C 4F5C            LDR              R7, = GPIO_PORTD_BASE + (PINSD_
+6_7<<2)
+   90 0000003E         ;;----------------------END CONF_SWITCHS
+   91 0000003E         
+   92 0000003E         ;;----------------------CONF_BUMPERS
+   93 0000003E F04F 0903       LDR              R9, = PINSE_1_2
+   94 00000042 F8DF 8170       LDR              R8, = GPIO_PORTE_BASE+GPIO_O_DE
+N
+   95 00000046 F8C8 9000       STR              R9, [R8]
+   96 0000004A F8DF 816C       LDR              R8, = GPIO_PORTE_BASE+GPIO_O_PU
+R
+   97 0000004E F8C8 9000       STR              R9, [R8]
+   98 00000052 F8DF 8168       LDR              R8, = GPIO_PORTE_BASE + (PINSE_
 1_2<<2)
-   97 00000056         
-   98 00000056         
-   99 00000056         ;;----------------------CONF_MOTORS
-  100 00000056 F7FF FFFE       BL               MOTEUR_INIT ;; Setup PWM + GPIO
+   99 00000056         ;;----------------------END CONF_BUMPERS
+  100 00000056         
+  101 00000056         ;;----------------------CONF_MOTORS
+  102 00000056 F7FF FFFE       BL               MOTEUR_INIT ;; Setup PWM + GPIO
                                                             
-  101 0000005A F7FF FFFE       BL               MOTEUR_DROIT_ON ;; Turn on righ
+  103 0000005A F7FF FFFE       BL               MOTEUR_DROIT_ON ;; Turn on righ
                                                             t motor
-  102 0000005E F7FF FFFE       BL               MOTEUR_GAUCHE_ON ;; Turn on lef
+  104 0000005E F7FF FFFE       BL               MOTEUR_GAUCHE_ON ;; Turn on lef
                                                             t motor
-  103 00000062         
-  104 00000062         
-  105 00000062 F04F 0A80       MOV              R10, #0x80  ;; Classic mode by 
+  105 00000062 F7FF FFFE       BL               MOTEUR_DROIT_AVANT ;; Set front
+                                                             direction for righ
+                                                            t motor
+  106 00000066 F7FF FFFE       BL               MOTEUR_GAUCHE_AVANT ;; set fron
+                                                            t direction for lef
+                                                            t motor
+  107 0000006A         ;;----------------------END CONF_MOTORS
+  108 0000006A         
+  109 0000006A F04F 0A40       MOV              R10, #0x40  ;; Classic mode by 
                                                             default
-  106 00000066         
-  107 00000066         main_loop
-  108 00000066         ;----------------------Get Environnement Entries (Update
+  110 0000006E         
+  111 0000006E         main_loop
+  112 0000006E         ;----------------------Get Environnement Entries (Update
                         Switchs & Bumpers Values)
-  109 00000066 683B            ldr              R3, [R7]    ;; Get Switchs Entr
+  113 0000006E 683B            LDR              R3, [R7]    ;; Get Switchs Entr
                                                             ies Values
-  110 00000068 F8D8 4000       ldr              R4, [R8]    ;; Get Bumper Entri
+  114 00000070 F8D8 4000       LDR              R4, [R8]    ;; Get Bumper Entri
                                                             es Values
-  111 0000006C         ;----------------------END Get Environnement Entries
-  112 0000006C         
-  113 0000006C         ;----------------------CHECK SWITCHS
-  114 0000006C 2B80            CMP              R3, #0x80   ;; if value equals 
-                                                            to switch 1 input v
-                                                            alue
-  115 0000006E D002            BEQ              switch1     ;; SWITCH 1
-  116 00000070 2B40            CMP              R3, #0x40   ;; if value equals 
-                                                            to switch 2 input v
-                                                            alue
-  117 00000072 D003            BEQ              switch2     ;; SWITCH 2
-  118 00000074 E004            B                end_switchs ;; FUNCTION CHECK S
-                                                            WITCHS END
-  119 00000076         switch1                              ;; Classic function
-                                                            ning mode
-  120 00000076 F04F 0A80       MOV              R10, #0x80  ;; Change global mo
-                                                            de value to classic
-                                                            
-  121 0000007A E001            B                end_switchs ;; FUNCTION CHECK S
-                                                            WITCHS END
-  122 0000007C         switch2                              ;; Labyrinth functi
-                                                            onning mode
-  123 0000007C F04F 0A40       MOV              R10, #0x40  ;; Change global mo
-                                                            de value to labyrin
-                                                            th 
-  124 00000080         end_switchs
-  125 00000080         ;----------------------END CHECK SWITCHS
+  115 00000074         ;----------------------END Get Environnement Entries
+  116 00000074         ;----------------------CHECK SWITCHS
+  117 00000074 2B00            CMP              R3, #0x00   ;; if all the switc
+                                                            hs are pressed
+  118 00000076 D002            BEQ              end_switchs ;; Jump to end_swit
+                                                            chs
+  119 00000078 2BC0            CMP              R3, #0xC0   ;; if no switchs ar
+                                                            e pressed
+  120 0000007A D000            BEQ              end_switchs ;; Jump to end_swit
+                                                            chs
+  121 0000007C 469A            MOV              R10, R3     ;; Store in R10 the
+                                                             value of the press
+                                                            ed switch
+  122 0000007E         end_switchs
+  123 0000007E         ;----------------------END CHECK SWITCHS
 
 
 
 ARM Macro Assembler    Page 5 
 
 
-  126 00000080         
-  127 00000080         ;----------------------CHOOSE MODE
-  128 00000080 F1BA 0F80       CMP              R10, #0x80  ; Si classique mode
+  124 0000007E         
+  125 0000007E         ;----------------------CHOOSE MODE
+  126 0000007E F1BA 0F80       CMP              R10, #0x80  ; Si classique mode
                                                             
-  129 00000084 D0FF            BEQ              classic_mode
-  130 00000086         ;CMP R10, #0x40  ; Si labyrinthe mode
-  131 00000086         ;BEQ labyrinthe_mode
-  132 00000086         
-  133 00000086         classic_mode
-  134 00000086 F000 F82C       BL               WAIT
-  135 0000008A 2C01            CMP              R4, #0x01
-  136 0000008C D013            BEQ              c_bumper_gauche
-  137 0000008E 2C02            CMP              R4, #0x02
-  138 00000090 D00A            BEQ              c_bumper_droit
-  139 00000092 2C03            CMP              R4, #0x03
-  140 00000094 D001            BEQ              c_bumper_not_pressed
-  141 00000096 2C00            CMP              R4, #0x00
-  142 00000098 D014            BEQ              c_all_bumpers
-  143 0000009A         
-  144 0000009A         c_bumper_not_pressed
-  145 0000009A F04F 0200       MOV              R2, #0x00   ; on reset les leds
+  127 00000082 D002            BEQ              classic_mode
+  128 00000084 F1BA 0F40       CMP              R10, #0x40  ; Si labyrinthe mod
+                                                            e
+  129 00000088 D025            BEQ              labyrinthe_mode
+  130 0000008A         
+  131 0000008A         ;; Classic
+  132 0000008A         classic_mode
+  133 0000008A F000 F87C       BL               WAIT
+  134 0000008E 2C01            CMP              R4, #0x01
+  135 00000090 D005            BEQ              c_bumper_gauche
+  136 00000092 2C02            CMP              R4, #0x02
+  137 00000094 D00A            BEQ              c_bumper_droit
+  138 00000096 2C03            CMP              R4, #0x03
+  139 00000098 D00F            BEQ              c_bumper_not_pressed
+  140 0000009A 2C00            CMP              R4, #0x00
+  141 0000009C D014            BEQ              c_all_bumpers
+  142 0000009E         c_bumper_gauche
+  143 0000009E F04F 0220       MOV              R2, #0x20
+  144 000000A2 F7FF FFFE       BL               MOTEUR_DROIT_AVANT
+  145 000000A6 F7FF FFFE       BL               MOTEUR_GAUCHE_ARRIERE
+  146 000000AA E063            B                end_choose_mode
+  147 000000AC         c_bumper_droit
+  148 000000AC F04F 0210       MOV              R2, #0x10
+  149 000000B0 F7FF FFFE       BL               MOTEUR_DROIT_ARRIERE
+  150 000000B4 F7FF FFFE       BL               MOTEUR_GAUCHE_AVANT
+  151 000000B8 E05C            B                end_choose_mode
+  152 000000BA         c_bumper_not_pressed
+  153 000000BA F04F 0200       MOV              R2, #0x00   ; on reset les leds
                                                             
-  146 0000009E F7FF FFFE       BL               MOTEUR_DROIT_AVANT
-  147 000000A2 F7FF FFFE       BL               MOTEUR_GAUCHE_AVANT
-  148 000000A6 E014            B                end_choose_mode
-  149 000000A8         
-  150 000000A8         c_bumper_droit
-  151 000000A8 F04F 0210       MOV              R2, #0x10
-  152 000000AC F7FF FFFE       BL               MOTEUR_DROIT_ARRIERE
-  153 000000B0 F7FF FFFE       BL               MOTEUR_GAUCHE_AVANT
-  154 000000B4 E00D            B                end_choose_mode
-  155 000000B6         
-  156 000000B6         c_bumper_gauche
-  157 000000B6 F04F 0220       MOV              R2, #0x20
-  158 000000BA F7FF FFFE       BL               MOTEUR_DROIT_AVANT
-  159 000000BE F7FF FFFE       BL               MOTEUR_GAUCHE_ARRIERE
-  160 000000C2 E006            B                end_choose_mode
-  161 000000C4         
-  162 000000C4         c_all_bumpers
-  163 000000C4 F04F 0230       MOV              R2, #0x30
-  164 000000C8 F7FF FFFE       BL               MOTEUR_DROIT_ARRIERE
-  165 000000CC F7FF FFFE       BL               MOTEUR_GAUCHE_ARRIERE
-  166 000000D0 E7FF            B                end_choose_mode
-  167 000000D2         
-  168 000000D2         ;labyrinthe_mode
-  169 000000D2         ;CMP R4, #0x01
-  170 000000D2         ;BEQ l_bumper_gauche
-  171 000000D2         ;CMP R4, #0x02
-  172 000000D2         ;BEQ l_bumper_droit
-  173 000000D2         ;CMP R4, #0x03
-  174 000000D2         ;BEQ l_bumper_not_pressed 
-  175 000000D2         ;BL WAIT
-  176 000000D2         ;CMP R4, #0x00
-  177 000000D2         ;BEQ l_all_bumpers
-  178 000000D2         ;B end_choose_mode
-  179 000000D2         
-  180 000000D2         ;l_bumper_not_pressed
-  181 000000D2         ;MOV R2, #0x00; on reset les leds
-  182 000000D2         ;BL MOTEUR_DROIT_AVANT    
+  154 000000BE F7FF FFFE       BL               MOTEUR_DROIT_AVANT
+  155 000000C2 F7FF FFFE       BL               MOTEUR_GAUCHE_AVANT
+  156 000000C6 E055            B                end_choose_mode
+  157 000000C8         c_all_bumpers
+  158 000000C8 F04F 0230       MOV              R2, #0x30
+  159 000000CC F7FF FFFE       BL               MOTEUR_DROIT_ARRIERE
+  160 000000D0 F7FF FFFE       BL               MOTEUR_GAUCHE_ARRIERE
+  161 000000D4 E04E            B                end_choose_mode
+  162 000000D6         
+  163 000000D6         ;; Labyrinthe
+  164 000000D6         labyrinthe_mode
+  165 000000D6 F000 F856       BL               WAIT
+  166 000000DA         
+  167 000000DA F04F 0230       MOV              R2, #0x30   ; BLINKING ALL LEDS
+                                                            
+  168 000000DE 2C03            CMP              R4, #0x03   ; BUMPERS not press
+                                                            ed
+  169 000000E0 D000            BEQ              algo_res
+  170 000000E2 E047            B                end_choose_mode
+  171 000000E4         
+  172 000000E4         algo_res
+  173 000000E4         ;; Rotation 90° droite
+  174 000000E4 F04F 0B0C       LDR              R11, =NB_ROTATIONS
+  175 000000E8         
+  176 000000E8         rotation_droite
+  177 000000E8 F7FF FFFE       BL               MOTEUR_DROIT_ARRIERE
 
 
 
 ARM Macro Assembler    Page 6 
 
 
-  183 000000D2         ;BL MOTEUR_GAUCHE_AVANT
-  184 000000D2         ;B end_choose_mode
-  185 000000D2         ;l_bumper_droit
-  186 000000D2         ;MOV R2, #0x10
-  187 000000D2         ;BL MOTEUR_DROIT_ARRIERE    
-  188 000000D2         ;BL MOTEUR_GAUCHE_AVANT
-  189 000000D2         ;B end_choose_mode
-  190 000000D2         ;l_bumper_gauche
-  191 000000D2         ;MOV R2, #0x20
-  192 000000D2         ;BL MOTEUR_DROIT_AVANT    
-  193 000000D2         ;BL MOTEUR_GAUCHE_ARRIERE
-  194 000000D2         ;B end_choose_mode
-  195 000000D2         ;l_all_bumpers
-  196 000000D2         ;MOV R2, #0x30
-  197 000000D2         ;BL MOTEUR_DROIT_ARRIERE    
-  198 000000D2         ;BL MOTEUR_GAUCHE_ARRIERE
-  199 000000D2         
-  200 000000D2         end_choose_mode
-  201 000000D2         ;----------------------END CHOOSE MODE
-  202 000000D2         
-  203 000000D2         ;----------------------BLINKING LED
-  204 000000D2 F04F 0900       MOV              R9, #0x00
-  205 000000D6 F8C5 9000       str              R9, [R5]    ;; Turn off LEDS wi
+  178 000000EC F7FF FFFE       BL               MOTEUR_GAUCHE_AVANT
+  179 000000F0 F000 F849       BL               WAIT
+  180 000000F4 F1BB 0B01       SUBS             R11, #0x01
+  181 000000F8 D1F6            BNE              rotation_droite
+  182 000000FA         ;; Fin Rotation 90° droite
+  183 000000FA         
+  184 000000FA         ;; Avancer
+  185 000000FA F04F 0B16       LDR              R11, =DISTANCE
+  186 000000FE F04F 0C00       MOV              R12, #0x00
+  187 00000102         go_front_A
+  188 00000102 F7FF FFFE       BL               MOTEUR_DROIT_AVANT
+  189 00000106 F7FF FFFE       BL               MOTEUR_GAUCHE_AVANT
+  190 0000010A F000 F83C       BL               WAIT
+  191 0000010E F10C 0C01       ADD              R12, #0x01
+  192 00000112         ;----------------------Get Environnement Entries (Update
+                        Switchs & Bumpers Values)
+  193 00000112 683B            LDR              R3, [R7]    ;; Get Switchs Entr
+                                                            ies Values
+  194 00000114 F8D8 4000       LDR              R4, [R8]    ;; Get Bumper Entri
+                                                            es Values
+  195 00000118         ;----------------------END Get Environnement Entries
+  196 00000118 2C03            CMP              R4, #0x03   ;; BUMPERS == BUMPE
+                                                            RS NOT PRESSED
+  197 0000011A D103            BNE              actives_bumpers
+  198 0000011C F1BB 0B01       SUBS             R11, #0x01
+  199 00000120 D1EF            BNE              go_front_A
+  200 00000122         ;; Fin Avancer
+  201 00000122         
+  202 00000122 E027            B                end_choose_mode
+  203 00000124         actives_bumpers
+  204 00000124         
+  205 00000124         ;; Reculer
+  206 00000124         go_back
+  207 00000124 F7FF FFFE       BL               MOTEUR_DROIT_ARRIERE
+  208 00000128 F7FF FFFE       BL               MOTEUR_GAUCHE_ARRIERE
+  209 0000012C F000 F82B       BL               WAIT
+  210 00000130 F1BC 0C01       SUBS             R12, #0x01
+  211 00000134 D1F6            BNE              go_back
+  212 00000136         ;; Fin Reculer 
+  213 00000136         
+  214 00000136         ;; Rotation 90° gauche
+  215 00000136 F04F 0B0C       LDR              R11, =NB_ROTATIONS
+  216 0000013A         ;SUB R11, #0x01
+  217 0000013A         rotation_gauche
+  218 0000013A F7FF FFFE       BL               MOTEUR_DROIT_AVANT
+  219 0000013E F7FF FFFE       BL               MOTEUR_GAUCHE_ARRIERE
+  220 00000142 F000 F820       BL               WAIT
+  221 00000146 F1BB 0B01       SUBS             R11, #0x01
+  222 0000014A D1F6            BNE              rotation_gauche
+  223 0000014C         ;; Fin Rotation 90° gauche
+  224 0000014C         
+  225 0000014C         ;; Avancer
+  226 0000014C F04F 0B16       LDR              R11, =DISTANCE
+  227 00000150 F04F 0C00       MOV              R12, #0x00
+  228 00000154         go_front_B
+  229 00000154 F7FF FFFE       BL               MOTEUR_DROIT_AVANT
+  230 00000158 F7FF FFFE       BL               MOTEUR_GAUCHE_AVANT
+  231 0000015C F000 F813       BL               WAIT
+  232 00000160 F10C 0C01       ADD              R12, #0x01
+
+
+
+ARM Macro Assembler    Page 7 
+
+
+  233 00000164         ;----------------------Get Environnement Entries (Update
+                        Switchs & Bumpers Values)
+  234 00000164 683B            LDR              R3, [R7]    ;; Get Switchs Entr
+                                                            ies Values
+  235 00000166 F8D8 4000       LDR              R4, [R8]    ;; Get Bumper Entri
+                                                            es Values
+  236 0000016A         ;----------------------END Get Environnement Entries
+  237 0000016A 2C03            CMP              R4, #0x03   ;; BUMPERS == BUMPE
+                                                            RS NOT PRESSED
+  238 0000016C D1DA            BNE              actives_bumpers
+  239 0000016E F1BB 0B01       SUBS             R11, #0x01
+  240 00000172 D1EF            BNE              go_front_B
+  241 00000174         ;; Fin Avancer
+  242 00000174         
+  243 00000174         end_choose_mode
+  244 00000174         ;----------------------END CHOOSE MODE
+  245 00000174         
+  246 00000174         ;----------------------BLINKING LED
+  247 00000174 F04F 0900       MOV              R9, #0x00
+  248 00000178 F8C5 9000       STR              R9, [R5]    ;; Turn off LEDS wi
                                                             th 0x00  
-  206 000000DA F000 F802       BL               WAIT        ;; Wait between LED
+  249 0000017C F000 F803       BL               WAIT        ;; Wait between LED
                                                             S on/off 
-  207 000000DE 602A            str              R2, [R5]    ;; Turn on LEDS tha
+  250 00000180 602A            STR              R2, [R5]    ;; Turn on LEDS tha
                                                             t correspond to por
                                                             tF broche 4 & 5 val
                                                             ues : 00110000 => R
                                                             2
-  208 000000E0         ;----------------------END BLINKING LED
-  209 000000E0         
-  210 000000E0 E7C1            b                main_loop
-  211 000000E2         ;BX LR  ;; retour à la suite du lien de branchement
-  212 000000E2         
-  213 000000E2         ;---------------------------------------   FUNCTIONS  --
+  251 00000182         ;----------------------END BLINKING LED
+  252 00000182         
+  253 00000182 E774            b                main_loop   ;; Retour au début
+                                                             de la boucle princ
+                                                            ipale
+  254 00000184 4770            BX               LR          ;; Retour à la sui
+                                                            te du lien de branc
+                                                            hement
+  255 00000186         
+  256 00000186         ;---------------------------------------   FUNCTIONS  --
                        -------------------------------------
-  214 000000E2         ;----------------------Waiting Loop
-  215 000000E2         WAIT
-  216 000000E2 F8DF 9038       LDR              R9, =TIME
-  217 000000E6 F1B9 0901 
-                       wait1   SUBS             R9, #0x01
-  218 000000EA D1FC            BNE              wait1
-  219 000000EC 4770            BX               LR
-  220 000000EE         
-  221 000000EE         ;--------------------------------------- END FUNCTIONS -
+  257 00000186         ;----------------------Waiting Loop ()
+  258 00000186 F8DF 9038 
+                       WAIT    LDR              R9, =TIME   ;; Initialisation d
+                                                            u nombre de tours d
+                                                            e boucle
+  259 0000018A F1B9 0901 
+                       wait1   SUBS             R9, #0x01   ;; R9 - 0x01
+  260 0000018E D1FC            BNE              wait1       ;; Tant que R9 != 0
+                                                             retourner à wait1
+                                                            
+  261 00000190 4770            BX               LR          ;; Retour à la sui
+                                                            te du lien de branc
+                                                            hement
+  262 00000192         ;----------------------END Waiting Loop
+  263 00000192         
+  264 00000192         ;--------------------------------------- END FUNCTIONS -
                        --------------------------------------
-  222 000000EE BF00            NOP
-  223 000000F0                 END
+  265 00000192 BF00            NOP
+  266 00000194                 END
               400FE108 
+
+
+
+ARM Macro Assembler    Page 8 
+
+
               40025400 
               4002551C 
               40025500 
@@ -388,12 +467,6 @@ ARM Macro Assembler    Page 6
               40007510 
               40007300 
               4002451C 
-
-
-
-ARM Macro Assembler    Page 7 
-
-
               40024510 
               4002400C 
               000FFFFF 
@@ -415,127 +488,199 @@ Symbol: .text
    Uses
       None
 Comment: .text unused
-WAIT 000000E2
+WAIT 00000186
 
 Symbol: WAIT
    Definitions
-      At line 215 in file main.s
+      At line 258 in file main.s
    Uses
-      At line 134 in file main.s
-      At line 206 in file main.s
+      At line 133 in file main.s
+      At line 165 in file main.s
+      At line 179 in file main.s
+      At line 190 in file main.s
+      At line 209 in file main.s
+      At line 220 in file main.s
+      At line 231 in file main.s
+      At line 249 in file main.s
 
 __main 00000000
 
 Symbol: __main
    Definitions
-      At line 57 in file main.s
+      At line 59 in file main.s
    Uses
-      At line 40 in file main.s
+      At line 42 in file main.s
 Comment: __main used once
-c_all_bumpers 000000C4
+actives_bumpers 00000124
+
+Symbol: actives_bumpers
+   Definitions
+      At line 203 in file main.s
+   Uses
+      At line 197 in file main.s
+      At line 238 in file main.s
+
+algo_res 000000E4
+
+Symbol: algo_res
+   Definitions
+      At line 172 in file main.s
+   Uses
+      At line 169 in file main.s
+Comment: algo_res used once
+c_all_bumpers 000000C8
 
 Symbol: c_all_bumpers
    Definitions
-      At line 162 in file main.s
+      At line 157 in file main.s
    Uses
-      At line 142 in file main.s
+      At line 141 in file main.s
 Comment: c_all_bumpers used once
-c_bumper_droit 000000A8
+c_bumper_droit 000000AC
 
 Symbol: c_bumper_droit
-   Definitions
-      At line 150 in file main.s
-   Uses
-      At line 138 in file main.s
-Comment: c_bumper_droit used once
-c_bumper_gauche 000000B6
-
-Symbol: c_bumper_gauche
-   Definitions
-      At line 156 in file main.s
-   Uses
-      At line 136 in file main.s
-Comment: c_bumper_gauche used once
-c_bumper_not_pressed 0000009A
-
-Symbol: c_bumper_not_pressed
-   Definitions
-      At line 144 in file main.s
-   Uses
-      At line 140 in file main.s
-Comment: c_bumper_not_pressed used once
-classic_mode 00000086
-
 
 
 
 ARM Macro Assembler    Page 2 Alphabetic symbol ordering
 Relocatable symbols
 
+   Definitions
+      At line 147 in file main.s
+   Uses
+      At line 137 in file main.s
+Comment: c_bumper_droit used once
+c_bumper_gauche 0000009E
+
+Symbol: c_bumper_gauche
+   Definitions
+      At line 142 in file main.s
+   Uses
+      At line 135 in file main.s
+Comment: c_bumper_gauche used once
+c_bumper_not_pressed 000000BA
+
+Symbol: c_bumper_not_pressed
+   Definitions
+      At line 152 in file main.s
+   Uses
+      At line 139 in file main.s
+Comment: c_bumper_not_pressed used once
+classic_mode 0000008A
+
 Symbol: classic_mode
    Definitions
-      At line 133 in file main.s
+      At line 132 in file main.s
    Uses
-      At line 129 in file main.s
+      At line 127 in file main.s
 Comment: classic_mode used once
-end_choose_mode 000000D2
+end_choose_mode 00000174
 
 Symbol: end_choose_mode
    Definitions
-      At line 200 in file main.s
+      At line 243 in file main.s
    Uses
-      At line 148 in file main.s
-      At line 154 in file main.s
-      At line 160 in file main.s
-      At line 166 in file main.s
+      At line 146 in file main.s
+      At line 151 in file main.s
+      At line 156 in file main.s
+      At line 161 in file main.s
+      At line 170 in file main.s
+      At line 202 in file main.s
 
-end_switchs 00000080
+end_switchs 0000007E
 
 Symbol: end_switchs
    Definitions
-      At line 124 in file main.s
+      At line 122 in file main.s
    Uses
       At line 118 in file main.s
-      At line 121 in file main.s
+      At line 120 in file main.s
 
-main_loop 00000066
+go_back 00000124
+
+Symbol: go_back
+   Definitions
+      At line 206 in file main.s
+   Uses
+      At line 211 in file main.s
+Comment: go_back used once
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Relocatable symbols
+
+go_front_A 00000102
+
+Symbol: go_front_A
+   Definitions
+      At line 187 in file main.s
+   Uses
+      At line 199 in file main.s
+Comment: go_front_A used once
+go_front_B 00000154
+
+Symbol: go_front_B
+   Definitions
+      At line 228 in file main.s
+   Uses
+      At line 240 in file main.s
+Comment: go_front_B used once
+labyrinthe_mode 000000D6
+
+Symbol: labyrinthe_mode
+   Definitions
+      At line 164 in file main.s
+   Uses
+      At line 129 in file main.s
+Comment: labyrinthe_mode used once
+main_loop 0000006E
 
 Symbol: main_loop
    Definitions
-      At line 107 in file main.s
+      At line 111 in file main.s
    Uses
-      At line 210 in file main.s
+      At line 253 in file main.s
 Comment: main_loop used once
-switch1 00000076
+rotation_droite 000000E8
 
-Symbol: switch1
+Symbol: rotation_droite
    Definitions
-      At line 119 in file main.s
+      At line 176 in file main.s
    Uses
-      At line 115 in file main.s
-Comment: switch1 used once
-switch2 0000007C
+      At line 181 in file main.s
+Comment: rotation_droite used once
+rotation_gauche 0000013A
 
-Symbol: switch2
-   Definitions
-      At line 122 in file main.s
-   Uses
-      At line 117 in file main.s
-Comment: switch2 used once
-wait1 000000E6
-
-Symbol: wait1
+Symbol: rotation_gauche
    Definitions
       At line 217 in file main.s
    Uses
-      At line 218 in file main.s
+      At line 222 in file main.s
+Comment: rotation_gauche used once
+wait1 0000018A
+
+Symbol: wait1
+   Definitions
+      At line 259 in file main.s
+   Uses
+      At line 260 in file main.s
 Comment: wait1 used once
-14 symbols
+20 symbols
 
 
 
 ARM Macro Assembler    Page 1 Alphabetic symbol ordering
 Absolute symbols
+
+DISTANCE 00000016
+
+Symbol: DISTANCE
+   Definitions
+      At line 39 in file main.s
+   Uses
+      At line 185 in file main.s
+      At line 226 in file main.s
 
 GPIO_O_DEN 0000051C
 
@@ -543,9 +688,9 @@ Symbol: GPIO_O_DEN
    Definitions
       At line 21 in file main.s
    Uses
-      At line 73 in file main.s
-      At line 83 in file main.s
-      At line 92 in file main.s
+      At line 75 in file main.s
+      At line 85 in file main.s
+      At line 94 in file main.s
 
 GPIO_O_DIR 00000400
 
@@ -553,7 +698,7 @@ Symbol: GPIO_O_DIR
    Definitions
       At line 13 in file main.s
    Uses
-      At line 71 in file main.s
+      At line 73 in file main.s
 Comment: GPIO_O_DIR used once
 GPIO_O_DR2R 00000500
 
@@ -561,7 +706,7 @@ Symbol: GPIO_O_DR2R
    Definitions
       At line 17 in file main.s
    Uses
-      At line 75 in file main.s
+      At line 77 in file main.s
 Comment: GPIO_O_DR2R used once
 GPIO_O_PUR 00000510
 
@@ -569,8 +714,8 @@ Symbol: GPIO_O_PUR
    Definitions
       At line 24 in file main.s
    Uses
-      At line 85 in file main.s
-      At line 94 in file main.s
+      At line 87 in file main.s
+      At line 96 in file main.s
 
 GPIO_PORTD_BASE 40007000
 
@@ -578,36 +723,45 @@ Symbol: GPIO_PORTD_BASE
    Definitions
       At line 27 in file main.s
    Uses
-      At line 83 in file main.s
       At line 85 in file main.s
       At line 87 in file main.s
+      At line 89 in file main.s
 
 GPIO_PORTE_BASE 40024000
 
 Symbol: GPIO_PORTE_BASE
    Definitions
       At line 28 in file main.s
-   Uses
-      At line 92 in file main.s
-      At line 94 in file main.s
-      At line 96 in file main.s
-
-GPIO_PORTF_BASE 40025000
-
-Symbol: GPIO_PORTF_BASE
-   Definitions
 
 
 
 ARM Macro Assembler    Page 2 Alphabetic symbol ordering
 Absolute symbols
 
+   Uses
+      At line 94 in file main.s
+      At line 96 in file main.s
+      At line 98 in file main.s
+
+GPIO_PORTF_BASE 40025000
+
+Symbol: GPIO_PORTF_BASE
+   Definitions
       At line 29 in file main.s
    Uses
-      At line 71 in file main.s
       At line 73 in file main.s
       At line 75 in file main.s
-      At line 78 in file main.s
+      At line 77 in file main.s
+      At line 80 in file main.s
+
+NB_ROTATIONS 0000000C
+
+Symbol: NB_ROTATIONS
+   Definitions
+      At line 38 in file main.s
+   Uses
+      At line 174 in file main.s
+      At line 215 in file main.s
 
 PINSD_6_7 000000C0
 
@@ -615,8 +769,8 @@ Symbol: PINSD_6_7
    Definitions
       At line 32 in file main.s
    Uses
-      At line 82 in file main.s
-      At line 87 in file main.s
+      At line 84 in file main.s
+      At line 89 in file main.s
 
 PINSE_1_2 00000003
 
@@ -624,8 +778,8 @@ Symbol: PINSE_1_2
    Definitions
       At line 33 in file main.s
    Uses
-      At line 91 in file main.s
-      At line 96 in file main.s
+      At line 93 in file main.s
+      At line 98 in file main.s
 
 PINSF_4_5 00000030
 
@@ -633,9 +787,9 @@ Symbol: PINSF_4_5
    Definitions
       At line 34 in file main.s
    Uses
-      At line 70 in file main.s
-      At line 77 in file main.s
-      At line 78 in file main.s
+      At line 72 in file main.s
+      At line 79 in file main.s
+      At line 80 in file main.s
 
 SYSCTL_PERIPH_GPIOF 400FE108
 
@@ -643,7 +797,13 @@ Symbol: SYSCTL_PERIPH_GPIOF
    Definitions
       At line 9 in file main.s
    Uses
-      At line 60 in file main.s
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Absolute symbols
+
+      At line 62 in file main.s
 Comment: SYSCTL_PERIPH_GPIOF used once
 TIME 000FFFFF
 
@@ -651,9 +811,9 @@ Symbol: TIME
    Definitions
       At line 37 in file main.s
    Uses
-      At line 216 in file main.s
+      At line 258 in file main.s
 Comment: TIME used once
-12 symbols
+14 symbols
 
 
 
@@ -664,25 +824,31 @@ MOTEUR_DROIT_ARRIERE 00000000
 
 Symbol: MOTEUR_DROIT_ARRIERE
    Definitions
-      At line 48 in file main.s
+      At line 50 in file main.s
    Uses
-      At line 152 in file main.s
-      At line 164 in file main.s
+      At line 149 in file main.s
+      At line 159 in file main.s
+      At line 177 in file main.s
+      At line 207 in file main.s
 
 MOTEUR_DROIT_AVANT 00000000
 
 Symbol: MOTEUR_DROIT_AVANT
    Definitions
-      At line 47 in file main.s
+      At line 49 in file main.s
    Uses
-      At line 146 in file main.s
-      At line 158 in file main.s
+      At line 105 in file main.s
+      At line 144 in file main.s
+      At line 154 in file main.s
+      At line 188 in file main.s
+      At line 218 in file main.s
+      At line 229 in file main.s
 
 MOTEUR_DROIT_INVERSE 00000000
 
 Symbol: MOTEUR_DROIT_INVERSE
    Definitions
-      At line 49 in file main.s
+      At line 51 in file main.s
    Uses
       None
 Comment: MOTEUR_DROIT_INVERSE unused
@@ -690,7 +856,7 @@ MOTEUR_DROIT_OFF 00000000
 
 Symbol: MOTEUR_DROIT_OFF
    Definitions
-      At line 46 in file main.s
+      At line 48 in file main.s
    Uses
       None
 Comment: MOTEUR_DROIT_OFF unused
@@ -698,39 +864,45 @@ MOTEUR_DROIT_ON 00000000
 
 Symbol: MOTEUR_DROIT_ON
    Definitions
-      At line 45 in file main.s
+      At line 47 in file main.s
    Uses
-      At line 101 in file main.s
+      At line 103 in file main.s
 Comment: MOTEUR_DROIT_ON used once
 MOTEUR_GAUCHE_ARRIERE 00000000
 
 Symbol: MOTEUR_GAUCHE_ARRIERE
    Definitions
-      At line 54 in file main.s
+      At line 56 in file main.s
    Uses
-      At line 159 in file main.s
-      At line 165 in file main.s
+      At line 145 in file main.s
+      At line 160 in file main.s
+      At line 208 in file main.s
+      At line 219 in file main.s
 
-MOTEUR_GAUCHE_AVANT 00000000
-
-Symbol: MOTEUR_GAUCHE_AVANT
-   Definitions
-      At line 53 in file main.s
-   Uses
-      At line 147 in file main.s
-      At line 153 in file main.s
 
 
 
 ARM Macro Assembler    Page 2 Alphabetic symbol ordering
 External symbols
 
+MOTEUR_GAUCHE_AVANT 00000000
+
+Symbol: MOTEUR_GAUCHE_AVANT
+   Definitions
+      At line 55 in file main.s
+   Uses
+      At line 106 in file main.s
+      At line 150 in file main.s
+      At line 155 in file main.s
+      At line 178 in file main.s
+      At line 189 in file main.s
+      At line 230 in file main.s
 
 MOTEUR_GAUCHE_INVERSE 00000000
 
 Symbol: MOTEUR_GAUCHE_INVERSE
    Definitions
-      At line 55 in file main.s
+      At line 57 in file main.s
    Uses
       None
 Comment: MOTEUR_GAUCHE_INVERSE unused
@@ -738,7 +910,7 @@ MOTEUR_GAUCHE_OFF 00000000
 
 Symbol: MOTEUR_GAUCHE_OFF
    Definitions
-      At line 52 in file main.s
+      At line 54 in file main.s
    Uses
       None
 Comment: MOTEUR_GAUCHE_OFF unused
@@ -746,17 +918,17 @@ MOTEUR_GAUCHE_ON 00000000
 
 Symbol: MOTEUR_GAUCHE_ON
    Definitions
-      At line 51 in file main.s
+      At line 53 in file main.s
    Uses
-      At line 102 in file main.s
+      At line 104 in file main.s
 Comment: MOTEUR_GAUCHE_ON used once
 MOTEUR_INIT 00000000
 
 Symbol: MOTEUR_INIT
    Definitions
-      At line 43 in file main.s
+      At line 45 in file main.s
    Uses
-      At line 100 in file main.s
+      At line 102 in file main.s
 Comment: MOTEUR_INIT used once
 11 symbols
-371 symbols in table
+379 symbols in table

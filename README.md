@@ -4,25 +4,25 @@ Stellaris_ASM
 Description
 --------------------------------------------------------------
 
-Ce projet a été réalisé dans le cadre du module architecture de notre formation d'ingénieur en Informatique et Application à l'ESIEE-IT. Stellaris_ASM est un programme en assembleur permettant le controle d'un robot à travers deux modes de déplacement sélectionnable à partir de ses switchs :
+Ce projet a été réalisé dans le cadre du module architecture de notre formation d'ingénieur en Informatique et Application à l'ESIEE-IT. Stellaris_ASM est un programme en assembleur (.s) qui permet le fonctionnement permettant le contrôle d'un robot à travers deux modes de déplacement sélectionnable à partir de ses switchs :
 
 * Classique
 * Résolution Labyrinthe
 
-Voici les outils utilisés pour le développement de cette application :
+Voici les outils utilisés pour le développement de ce programme :
 
 * Robot Stellaris Cortex M3
 * Assembleur ARM Cortex M3
 * Keil uVision4
 
-Mode de déplacement classique
+Mode Classique
 --------------------------------------------------------------
 
 * 2 bumpers pressé => allumer les deux LED et faire demi-tour
 * Bumper droit pressé => allumer la LED gauche et tourner à gauche
 * Bumper gauche pressé => allumer la LED droite et tourner à droite
 
-Mode de déplacement résolution de labyrinthe
+Mode Résolution de labyrinthe
 --------------------------------------------------------------
 
 Méthode d'échapatoire d'un labyrinthe issue de l'algorithme de Pledge :
@@ -32,45 +32,46 @@ Méthode d'échapatoire d'un labyrinthe issue de l'algorithme de Pledge :
 * Ensuite on suit le mur en ajoutant 1 au compteur dès que l'on tourne à droite et en soustrayant 1 dès que l'on tourne à gauche.
 * Si le compteur indique 0, on lâche le mur, et on va tout droit.
 
-Registres utilisés
+Utilisation des Registres
 --------------------------------------------------------------
 
-* R0 => MOTEUR
+* R0 => RK_MOTORS
 
-* R1 => MOTEUR
+* R1 => RK_MOTORS
 
 * R2 => ETAT LED
-  * valeur possible :
-    * 0X00 => LED OFF
-    * 0X10 => LED right
-    * 0X20 => LED left
-    * 0X30 => LED left & LED right
+  * Valeur Possibles :
+    * 0x00 => LEDS ÉTEINTES
+    * 0x10 => LED DROITE
+    * 0x20 => LED GAUCHES
+    * 0x30 => LEDS
 
 * R3 => ETATS SWITCHS
-  * valeur possible :
-    * 0X40 => SWITCH 2
-    * 0X80 => SWITCH 1
-    * 0XC0 => SWITCH not pressed
+  * Valeurs Possibles :
+    * 0x00 => SWITCHS PRESSÉS
+    * 0x40 => SWITCH 2
+    * 0x80 => SWITCH 1
+    * 0xC0 => SWITCHS NON PRESSÉS
 
 * R4 => ETATS BUMPERS
-  * valeur possible :
-    * 0X00 => BUMPERS pressed
-    * 0X01 => BUMPER left
-    * 0X02 => BUMPER right
-    * 0X03 => BUMPERS not pressed
+  * Valeurs Possibles :
+    * 0x00 => BUMPERS PRESSÉS
+    * 0x01 => BUMPER GAUCHE
+    * 0x02 => BUMPER DROIT
+    * 0x03 => BUMPERS NON PRESSÉS
 
-* R5 => @ LEDS
+* R5 => @ MEMOIRE LEDS
 
-* R6 => @ MOTEUR
+* R6 => @ MEMOIRE RK_MOTORS
 
-* R7 => @ SWITCHS
+* R7 => @ MEMOIRE SWITCHS
   
-* R8 => @ BUMPERS
+* R8 => @ MEMOIRE BUMPERS
 
-* R9 => WAIT
+* R9 => NOMBRE TOURS BOUCLE POUR FONCTION WAIT
 
-* R10 => MODE DE JEU
+* R10 => VALEUR CORRESPONDANTE AU MODE DE JEU SÉLECTIONNÉ
 
-* R11 =>  N/A
+* R11 => NOMBRE TOURS POUR ROTATION 90° & DISTANCE AVANT & ARRIERE
 
-* R12 =>  N/A
+* R12 => DISTANCE AVANT PARCOURUE AVANT IMPACT (DISTANCE À PARCOURIR DANS LE SENS INVERSE)
