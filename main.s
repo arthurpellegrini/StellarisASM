@@ -106,7 +106,7 @@ __main
 	BL	MOTEUR_GAUCHE_AVANT		;; set front direction for left motor
 	;;----------------------END CONF_MOTORS
 
-	MOV R10, #0x40	;; Setup R10 with value for the default mode : 0x80 for Classic mode 
+	MOV R10, #0x80	;; Setup R10 with value for the default mode : 0x80 for Classic mode 
 					;;											&& 0x40 for Labyrinth mode
 
 main_loop
