@@ -32,6 +32,11 @@ Méthode d'échapatoire d'un labyrinthe issue de l'algorithme de Pledge :
 * Ensuite on suit le mur en ajoutant 1 au compteur dès que l'on tourne à droite et en soustrayant 1 dès que l'on tourne à gauche.
 * Si le compteur indique 0, on lâche le mur, et on va tout droit.
 
+Vidéos
+--------------------------------------------------------------
+<iframe width="560" height="315" src="https://www.youtube.com/embed/83kjO3r_M6c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/YOWi1U9MCvc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 Utilisation des Registres
 --------------------------------------------------------------
 
