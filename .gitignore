@@ -1,6 +1,14 @@
+# Ignore compiled object files
+*.o
+
+# Ignore build artifacts
+*.d
+*.lst
+*.bak
+
+# Ignore HTML files
 *.html
 *.htm
-*.d
-*.o
-*.bak
-*.lst
+
+# Ignore generated output files
+out/
