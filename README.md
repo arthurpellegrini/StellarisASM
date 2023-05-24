@@ -35,6 +35,7 @@ Labyrinth escape method based on the Pledge algorithm:
 Videos
 --------------------------------------------------------------
 https://www.youtube.com/embed/83kjO3r_M6c
+
 https://www.youtube.com/embed/YOWi1U9MCvc
 
 Register Usage

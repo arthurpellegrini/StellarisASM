@@ -35,6 +35,7 @@ Méthode d'échapatoire d'un labyrinthe issue de l'algorithme de Pledge :
 Vidéos
 --------------------------------------------------------------
 https://www.youtube.com/embed/83kjO3r_M6c
+
 https://www.youtube.com/embed/YOWi1U9MCvc
 
 Utilisation des Registres
