@@ -4,74 +4,80 @@ Stellaris_ASM
 Description
 --------------------------------------------------------------
 
-Ce projet a été réalisé dans le cadre du module architecture de notre formation d'ingénieur en Informatique et Application à l'ESIEE-IT. Stellaris_ASM est un programme en assembleur (.s) qui permet le fonctionnement permettant le contrôle d'un robot à travers deux modes de déplacement sélectionnable à partir de ses switchs :
+This project was developed as part of the architecture module in our Computer Science and Application engineering program at ESIEE-IT. Stellaris_ASM is an assembly (.s) program that enables control of a robot through two selectable movement modes using switches:
 
-* Classique
-* Résolution Labyrinthe
+* Classic
+* Labyrinth Solver
 
-Voici les outils utilisés pour le développement de ce programme :
+The following tools were used for the development of this program:
 
-* Robot Stellaris Cortex M3
-* Assembleur ARM Cortex M3
+* Stellaris Cortex M3 Robot
+* ARM Cortex M3 Assembly
 * Keil uVision4
 
-Mode Classique
+Classic Mode
 --------------------------------------------------------------
 
-* 2 bumpers pressé => allumer les deux LED et faire demi-tour
-* Bumper droit pressé => allumer la LED gauche et tourner à gauche
-* Bumper gauche pressé => allumer la LED droite et tourner à droite
+* Pressing both bumpers: Turn on both LEDs and perform a U-turn.
+* Pressing the right bumper: Turn on the left LED and turn left.
+* Pressing the left bumper: Turn on the right LED and turn right.
 
-Mode Résolution de labyrinthe
+Labyrinth Solver Mode
 --------------------------------------------------------------
 
-Méthode d'échapatoire d'un labyrinthe issue de l'algorithme de Pledge :
+Labyrinth escape method based on the Pledge algorithm:
 
-* Si le compteur indique 0, on va tout droit jusqu'au mur en face.
-* A partir de ce mur, on tourne du côté que l'on préfère (mais toujours le même, disons gauche).
-* Ensuite on suit le mur en ajoutant 1 au compteur dès que l'on tourne à droite et en soustrayant 1 dès que l'on tourne à gauche.
-* Si le compteur indique 0, on lâche le mur, et on va tout droit.
+* If the counter is 0, move straight ahead until reaching the wall in front.
+* From this wall, turn in the preferred direction (always the same, let's say left).
+* Then, follow the wall by adding 1 to the counter when turning right and subtracting 1 when turning left.
+* If the counter is 0, detach from the wall and move straight ahead.
 
-Utilisation des Registres
+Videos
+--------------------------------------------------------------
+https://www.youtube.com/embed/83kjO3r_M6c
+
+https://www.youtube.com/embed/YOWi1U9MCvc
+
+Register Usage
 --------------------------------------------------------------
 
 * R0 => RK_MOTORS
 
 * R1 => RK_MOTORS
 
-* R2 => ETAT LED
-  * Valeur Possibles :
-    * 0x00 => LEDS ÉTEINTES
-    * 0x10 => LED DROITE
-    * 0x20 => LED GAUCHES
-    * 0x30 => LEDS
+* R2 => LED STATE
+  * Possible values:
+    * 0x00 => LEDs OFF
+    * 0x10 => LEFT LED
+    * 0x20 => RIGHT LED
+    * 0x30 => BOTH LEDs
 
-* R3 => ETATS SWITCHS
-  * Valeurs Possibles :
-    * 0x00 => SWITCHS PRESSÉS
+* R3 => SWITCH STATES
+  * Possible values:
+    * 0x00 => SWITCHES PRESSED
     * 0x40 => SWITCH 2
     * 0x80 => SWITCH 1
-    * 0xC0 => SWITCHS NON PRESSÉS
+    * 0xC0 => SWITCHES NOT PRESSED
 
-* R4 => ETATS BUMPERS
-  * Valeurs Possibles :
-    * 0x00 => BUMPERS PRESSÉS
-    * 0x01 => BUMPER GAUCHE
-    * 0x02 => BUMPER DROIT
-    * 0x03 => BUMPERS NON PRESSÉS
+* R4 => BUMPER STATES
+  * Possible values:
+    * 0x00 => BUMPERS PRESSED
+    * 0x01 => LEFT BUMPER
+    * 0x02 => RIGHT BUMPER
+    * 0x03 => BUMPERS NOT PRESSED
+	
+* R5 => @ LED MEMORY
 
-* R5 => @ MEMOIRE LEDS
+* R6 => @ RK_MOTORS MEMORY
 
-* R6 => @ MEMOIRE RK_MOTORS
-
-* R7 => @ MEMOIRE SWITCHS
+* R7 => @ SWITCH MEMORY
   
-* R8 => @ MEMOIRE BUMPERS
+* R8 => @ BUMPER MEMORY
 
-* R9 => NOMBRE TOURS BOUCLE POUR FONCTION WAIT
+* R9 => LOOP COUNT FOR WAIT FUNCTION
 
-* R10 => VALEUR CORRESPONDANTE AU MODE DE JEU SÉLECTIONNÉ
+* R10 => VALUE CORRESPONDING TO THE SELECTED GAME MODE
 
-* R11 => NOMBRE TOURS POUR ROTATION 90°
+* R11 => NUMBER OF LOOPS FOR 90° ROTATION
 
-* R12 => DISTANCE AVANT PARCOURUE AVANT IMPACT (DISTANCE À PARCOURIR DANS LE SENS INVERSE)
+* R12 => DISTANCE TRAVELED FORWARD BEFORE IMPACT (DISTANCE TO TRAVEL IN REVERSE)
