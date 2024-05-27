@@ -1,10 +1,10 @@
-Stellaris_ASM
+StellarisASM
 ==============================================================
 
 Description
 --------------------------------------------------------------
 
-This project was developed as part of the architecture module in our Computer Science and Application engineering program at ESIEE-IT. Stellaris_ASM is an assembly (.s) program that enables control of a robot through two selectable movement modes using switches:
+This project was developed as part of the architecture module in our Computer Science and Application engineering program at ESIEE. Stellaris_ASM is an assembly (.s) program that enables control of a robot through two selectable movement modes using switches:
 
 * Classic
 * Labyrinth Solver
